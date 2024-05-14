@@ -4,6 +4,7 @@ import { View, TextInput, Text, TouchableOpacity, Alert, Button} from "react-nat
 import { useNavigation } from "@react-navigation/native";
 
 import styles from "./style";
+import autenticar from "../../../../services/loginService";
 
 export default function Form() {
     const navigation = useNavigation();
@@ -58,7 +59,7 @@ export default function Form() {
 
                 <TouchableOpacity
                     style={styles.buttonClean}
-                    onPress={() => limpaCampos()}
+                    onPress={() => autenticar()}
                 >
                     <Text style={styles.textButtonClean}>{textButton}</Text>
                 </TouchableOpacity>
