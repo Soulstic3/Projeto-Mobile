@@ -2,7 +2,7 @@ import React, { useState, } from "react";
 import { View, TextInput, Text, TouchableOpacity, Alert} from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
-import handleFormSubmit from "./formHandler";
+import { handleFormSubmit } from "./formHandler";
 import styles from "./style";
 
 
@@ -38,7 +38,10 @@ export default function Form() {
     const navigateToCadastro = () => {
         navigation.navigate("Cadastro"); // Navega para a tela de cadastro
       };
-
+    
+    const navigateToHome = () => {
+        navigation.navigate("Home")
+    };
 
     return (
         <View style={styles.formContext}>
@@ -59,13 +62,12 @@ export default function Form() {
                     onChangeText={setSenha}
                     value={senha}
                     placeholder="Senha"
-                    keyboardType="numeric"
                     secureTextEntry={true}
                 />
 
                 <TouchableOpacity
                     style={styles.buttonClean}
-                    onPress={() => handleSubmit()}
+                    onPress={navigateToHome}
                 >
                     <Text style={styles.textButtonClean}>{textButton}</Text>
                 </TouchableOpacity>

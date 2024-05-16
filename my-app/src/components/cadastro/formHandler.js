@@ -28,7 +28,7 @@ const handleFormSubmit = (data, navigation) => {
   })
   .catch(handleSubmitError)
   .finally(() => {
-    navigation.goBack();
+    navigation.navigate(inicial);
   });
 };
 

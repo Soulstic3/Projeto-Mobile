@@ -1,11 +1,30 @@
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { AntDesign } from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons";
+import  AntDesign  from "@expo/vector-icons/AntDesign";
 import React from "react";
-import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, Button, Alert } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useState } from "react";
+import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, Button, TouchableOpacity } from "react-native";
+import * as ImagePicker from 'expo-image-picker';
 
-export default function App({ navigation }) {
+const defaultImage = require('../assets/img/profile-pic.jpg')
+
+export default function Perfil() {
+    const [image, setImage] = useState('');
+
+    const handleImagePicker = async () => {
+       const result = await ImagePicker.launchImageLibraryAsync({
+            aspect: [4,4],
+            allowsEditing: true,
+            base64: true,
+            quality: 1,
+        });
+        if (!result.canceled) {
+            setImage(result.assets[0].uri);
+        }
+    };
+
     return(
+
+
         <SafeAreaView style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.titleBar}>
@@ -15,12 +34,18 @@ export default function App({ navigation }) {
                 <View  style= {styles.formContainer}>
                     <View style={{alignSelf: "center"}}>
                         <View style={styles.profileImage}>
-                            <Image source={require("../assets/img/profile-pic.jpg")} style={styles.image} resizeMode="center"></Image>
+                            <Image source={image ? {uri:image} : defaultImage} 
+                                style={styles.image} 
+                                resizeMode="center"></Image>                              
                         </View>
+                        <TouchableOpacity style={styles.icone}
+                            onPress={handleImagePicker}>
+                                <AntDesign name="edit" size={24} color="black" />
+                        </TouchableOpacity>
                     </View>
                     
                     <View style={styles.infoContainer}>
-                        <Text style={styles.nome}>Felipe Miguel</Text>
+                        <Text style={styles.nome}></Text>
                     </View>
 
                     <View style={styles.infoContainer}>
@@ -28,17 +53,17 @@ export default function App({ navigation }) {
                     </View>
                     <View style={styles.infoContainer}>
                         <Text style={styles.text}>Nome:</Text>
-                        <Text style={styles.dados}>Felipe Miguel S</Text>
+                        <Text style={styles.dados}></Text>
                         <Text style={styles.text}>CPF:</Text>
-                        <Text style={styles.dados}>***.***.***-**</Text>
+                        <Text style={styles.dados}></Text>
                         <Text style={styles.text}>Data de nascimento:</Text>
-                        <Text style={styles.dados}>dd/mm/aa</Text>
+                        <Text style={styles.dados}></Text>
                         <Text style={styles.text}>Cartão do sus::</Text>
-                        <Text style={styles.dados}>*** **** **** ****</Text>
+                        <Text style={styles.dados}></Text>
                         <Text style={styles.text}>Sexo:</Text>
-                        <Text style={styles.dados}>Masculino</Text>
+                        <Text style={styles.dados}></Text>
                         <Text style={styles.text}>Telefone:</Text>
-                        <Text style={styles.dados}>(81 9 99910811)</Text>
+                        <Text style={styles.dados}></Text>
                         <Text style={styles.text}>Endereço:</Text>
                         <Text style={styles.dados}></Text>
                         <Text style={styles.text}>Bairro:</Text>
@@ -62,6 +87,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#3970C9"
+    },
+    icone: {
+        alignSelf: "flex-end",
     },
     nome: {
         color: "#52575D",
