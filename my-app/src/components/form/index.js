@@ -1,38 +1,44 @@
 import React, { useState, } from "react";
-import { View, TextInput, Text, TouchableOpacity, Alert, Button} from "react-native";
+import { View, TextInput, Text, TouchableOpacity, Alert} from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
-
+import handleFormSubmit from "./formHandler";
 import styles from "./style";
-import autenticar from "../../../../services/loginService";
+
 
 export default function Form() {
     const navigation = useNavigation();
-
+    
     const [cpf, setcpf] = useState(null)
     const [senha, setSenha] = useState(null)
     const [textButton, setTextButton] = useState("Acessar")
     const [textoButton, setTextoButton] = useState("Primeiro Acesso")
-
+    const handleSubmit = () => {
+        if (!cpf || !senha) {
+          createAlert();
+          return;
+        }
+    
+        handleFormSubmit(
+          { cpf, senha },
+          navigation,
+          handleSubmitError
+        );
+      };
     const createAlert = () => Alert.alert(
         "Oops!",
         "Verifique se o campo CPF e senha estão preenchidos."
     );
 
+    const handleSubmitError = error => {
+        console.error('Error sending request:', error);
+        Alert.alert('Erro', 'Erro ao enviar solicitação');
+      };
+
     const navigateToCadastro = () => {
         navigation.navigate("Cadastro"); // Navega para a tela de cadastro
       };
 
-    function limpaCampos() {
-        if (cpf == null || senha == null) {
-            createAlert();
-        }else{
-            navigation.navigate("Home", { cpf, senha });
-            // Limpar campos se necessário
-            setcpf("");
-            setSenha("");
-        }
-    }
 
     return (
         <View style={styles.formContext}>
@@ -59,7 +65,7 @@ export default function Form() {
 
                 <TouchableOpacity
                     style={styles.buttonClean}
-                    onPress={() => autenticar()}
+                    onPress={() => handleSubmit()}
                 >
                     <Text style={styles.textButtonClean}>{textButton}</Text>
                 </TouchableOpacity>

@@ -4,34 +4,41 @@ import { View, Text, TextInput, TouchableOpacity, ScrollView} from "react-native
 import { useNavigation } from "@react-navigation/native";
 import { StyleSheet } from "react-native";
 import DropDownPicker from 'react-native-dropdown-picker';
-import handleLocalSubmit from './formHandler'
+import  handleFormSubmit  from './formHandler'
 
 export default function Cadastro() {
   const navigation = useNavigation();
 
-  const navigateToCadastro = () => {
-    navigation.navigate("Cadastro"); // Navega para a tela de cadastro
-  };
 
   const [nome, setnome] = useState(null)
-  const [sus, setsus] = useState(null)
+  const [numero_cadsus, setsus] = useState(null)
   const [cpf, setcpf] = useState(null)
-  const [numero, setnumero] = useState(null)
-  const [data, setdata] = useState()
+  const [telefone, setnumero] = useState(null)
+  const [data_nascimento, setdata] = useState()
   const [senha, setsenha] = useState(null)
   const [ConfSenha, setConfSenha] = useState(null)
   const [textButton, setTextButton] = useState("Cadastrar")
-
- 
-    
+   
 //dropbar configuração
   const [open, setOpen] = useState(false);
-  const [genero, setGenero] = useState(null);
+  const [sexo, setSexo] = useState(null);
   const [items, setItems] = useState([
     {label: 'Masculino', value: 'Masculino'},
     {label: 'Feminino', value: 'Feminino'},
     {label: 'Não-binário', value: 'Não-binário'}
   ]);
+
+  const handleSubmit = () => {
+    handleFormSubmit({
+      nome,
+      cpf,
+      data_nascimento,
+      numero_cadsus,
+      sexo,
+      telefone,
+      senha,
+    }, navigation);
+  };
 
   return (
     <View style={styles.boxTitle}>
@@ -49,7 +56,7 @@ export default function Cadastro() {
               <TextInput
                   style={styles.input}
                   onChangeText={setsus}
-                  value={sus}
+                  value={numero_cadsus}
                   placeholder="Ex:000.0000.0000.0000"
                   keyboardType="numeric"
               />
@@ -64,25 +71,25 @@ export default function Cadastro() {
               <TextInput
                   style={styles.input}
                   onChangeText={setnumero}
-                  value={numero}
+                  value={telefone}
                   placeholder="Ex:(00)0 0000-0000"
               />
               <Text style={styles.label}>Data de Nascimento:</Text>
               <TextInput
                   style={styles.input}
                   onChangeText={setdata}
-                  value={data}
+                  value={data_nascimento}
                   placeholder="Ex:DD/MM/AAAA"
               />
               <Text style={styles.label}>Selecione seu Gênero:</Text>
-              <View>
+              <View style={styles.dropdownContainer}>
                 <DropDownPicker
                   style={styles.input}
                   open={open}
-                  value={genero}
+                  value={sexo}
                   items={items}
                   setOpen={setOpen}
-                  setValue={setGenero}
+                  setValue={setSexo}
                   setItems={setItems}
                   placeholder="Masculino"
                 />
@@ -105,7 +112,7 @@ export default function Cadastro() {
                     />
               <TouchableOpacity
                         style={styles.buttonClean}
-                        onPress={() => handleLocalSubmit()}
+                        onPress={handleSubmit}
                       >
                         <Text style={styles.textButtonClean}>{textButton}</Text>
               </TouchableOpacity>
@@ -173,5 +180,8 @@ TextTitle: {
   color: "#FFFFFF",
   fontSize: 36,
   fontWeight: "bold"
+},
+dropdownContainer: {
+  maxHeight: 100,
 },
 })

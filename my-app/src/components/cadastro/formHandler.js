@@ -1,18 +1,35 @@
-const handleLocalSubmit = () => {
-    const formData = new FormData(); // Create a new FormData object
-    formData.append('nome', nome);
-    formData.append('cpf', cpf);
-    formData.append('data', data);
-    formData.append('sus', sus);
-    formData.append('genero', genero);
-    formData.append('numero', numero);
-    formData.append('senha', senha);
-  
-    fetch('http://localhost:3000/cadastro', { // Replace with your API endpoint
-      method: 'POST',
-      body: formData
-    })
-    .then(response => response.json())
-    .then(data => console.log(data))
-    .catch(error => console.error(error));
-  }
+import { BASE_URL } from '../../config';
+
+import { Alert } from 'react-native';
+
+const handleFormSubmit = (data, navigation) => {
+
+  const url = `${BASE_URL}/cadastro`;
+  const handleSubmitError = (error) => {
+    console.error('Error sending request:', error);
+    Alert.alert('Erro', 'Erro ao enviar solicitação');
+  };
+
+  fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data),
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error ${response.status}`);
+    }
+    return response.json();
+  })
+  .then(() => {
+    Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
+  })
+  .catch(handleSubmitError)
+  .finally(() => {
+    navigation.goBack();
+  });
+};
+
+export default handleFormSubmit;
