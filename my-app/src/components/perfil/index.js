@@ -2,23 +2,23 @@ import { Ionicons } from "@expo/vector-icons";
 import  AntDesign  from "@expo/vector-icons/AntDesign";
 import React from "react";
 import { useState } from "react";
-import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, Button, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, TouchableOpacity } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
 
-const defaultImage = require('../assets/img/profile-pic.jpg')
+const defaultImage = require('../assets/img/profile-pic.jpg') // imagem padrao
 
 export default function Perfil() {
     const [image, setImage] = useState('');
 
-    const handleImagePicker = async () => {
+    const handleImagePicker = async () => { //usando metodo async para esperar o usuario enviar a imagem
        const result = await ImagePicker.launchImageLibraryAsync({
-            aspect: [4,4],
-            allowsEditing: true,
+            aspect: [4,4], // deixar imagem quadrada
+            allowsEditing: true, // deixar o usuario cortar a imagem como ele quiser
             base64: true,
-            quality: 1,
+            quality: 1, // nao perder qualidade
         });
-        if (!result.canceled) {
-            setImage(result.assets[0].uri);
+        if (!result.canceled) { // se o usuario nao cancelar salvar imagem
+            setImage(result.assets[0].uri); 
         }
     };
 
@@ -34,7 +34,7 @@ export default function Perfil() {
                 <View  style= {styles.formContainer}>
                     <View style={{alignSelf: "center"}}>
                         <View style={styles.profileImage}>
-                            <Image source={image ? {uri:image} : defaultImage} 
+                            <Image source={image ? {uri:image} : defaultImage}  // se o usuario nao definir imagem usar imagem padrao
                                 style={styles.image} 
                                 resizeMode="center"></Image>                              
                         </View>
@@ -72,10 +72,9 @@ export default function Perfil() {
                         <Text style={styles.dados}></Text>
                     </View>
                         <View style={styles.botao}>
-                            <Button
-                                title="Editar Dados"
-                                onPress={() => navigation.navigate('Atualizar')}
-                            />
+                            <TouchableOpacity>
+                                onPress={navigateToAtualizar}
+                            </TouchableOpacity>
                         </View>
                 </View>
             </ScrollView>
