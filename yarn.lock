@@ -5136,11 +5136,6 @@ mkdirp@^1.0.4:
   resolved "https://registry.npmjs.org/mkdirp/-/mkdirp-1.0.4.tgz"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
-moment@2.19.3:
-  version "2.19.3"
-  resolved "https://registry.npmjs.org/moment/-/moment-2.19.3.tgz"
-  integrity sha512-SiZ1HUDMfBpfCzL1Hm1vxUFkYDbHx8/RiWBLF+5qoVWTlBGtR15+wVQB7eSD/0w3ueDxzojlX9LQtiKVpLMsFQ==
-
 morgan@^1.10.0:
   version "1.10.0"
   resolved "https://registry.npmjs.org/morgan/-/morgan-1.10.0.tgz"
@@ -5831,14 +5826,6 @@ react-native-image-picker@^7.1.2:
   version "7.1.2"
   resolved "https://registry.npmjs.org/react-native-image-picker/-/react-native-image-picker-7.1.2.tgz"
   integrity sha512-b5y5nP60RIPxlAXlptn2QwlIuZWCUDWa/YPUVjgHc0Ih60mRiOg1PSzf0IjHSLeOZShCpirpvSPGnDExIpTRUg==
-
-react-native-masked-text@^1.12.5:
-  version "1.12.5"
-  resolved "https://registry.npmjs.org/react-native-masked-text/-/react-native-masked-text-1.12.5.tgz"
-  integrity sha512-lKGxeMbRW7c5pgGt6lSSsobIs5v3Gys8GHR4t5QDbHSJENDIOY97MWeucyhbuG+zJOhBo1XFIkCHkg5PsLU14g==
-  dependencies:
-    moment "2.19.3"
-    tinymask "^1.0.2"
 
 react-native-safe-area-context@^4.10.1, "react-native-safe-area-context@>= 3.0.0":
   version "4.10.1"
@@ -6749,11 +6736,6 @@ through2@^2.0.1:
   dependencies:
     readable-stream "~2.3.6"
     xtend "~4.0.1"
-
-tinymask@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.npmjs.org/tinymask/-/tinymask-1.0.2.tgz"
-  integrity sha512-2FjNINAMq0s3e94ns2PuElOQZOt9QVgnrv0JZ8yNblwecyQDhVsSre6Rs+WJj/IHEcgdfYbDMP7zvECTfV/Xnw==
 
 tmp@^0.0.33:
   version "0.0.33"

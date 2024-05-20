@@ -5,7 +5,8 @@ import { useNavigation } from "@react-navigation/native";
 import { StyleSheet } from "react-native";
 import DropDownPicker from 'react-native-dropdown-picker';
 import handleFormSubmit from './formHandler'
-import { MaskedTextInput } from 'react-native-masked-text';
+import {cpfApplyMask, susApplyMask, telApplyMask} from "@../../../utils/mask"
+
 
 export default function Cadastro() {
   const navigation = useNavigation();
@@ -28,6 +29,28 @@ export default function Cadastro() {
     { label: 'Feminino', value: 'Feminino' },
     { label: 'Não-binário', value: 'Não-binário' }
   ]);
+
+  function applyMaskCPF (input: string) {
+    const onlyNumbers = input.replace(/\D/g, "")
+    if(onlyNumbers.length === 11){
+      const cpf = cpfApplyMask(onlyNumbers)
+      return setcpf(cpf)
+    }
+  }
+  function applyMaskSUS (input: string) {
+    const onlyNumbers = input.replace(/\D/g, "")
+    if(onlyNumbers.length === 15){
+      const sus = susApplyMask(onlyNumbers)
+      return setsus(sus)
+    }
+  }
+  function applyMaskTel (input: string) {
+    const onlyNumbers = input.replace(/\D/g, "")
+    if(onlyNumbers.length === 11){
+      const tel = telApplyMask(onlyNumbers)
+      return setnumero(tel)
+    }
+  }
 
   //enviar dados para o formhandler
   const handleSubmit = () => {
@@ -55,34 +78,32 @@ export default function Cadastro() {
             placeholder="Ex:Amanda" // texto que vai aparecer dentro do input
           />
           <Text style={styles.label}>Cartão do SUS:</Text>
-          <MaskedTextInput
+          <TextInput
             style={styles.input}
-            mask={'999.9999.9999.9999'}
-            onChangeText={setsus}
+            onChangeText={applyMaskSUS}
             value={numero_cadsus}
             placeholder="Ex:000.0000.0000.0000"
             keyboardType="numeric"
           />
           <Text style={styles.label}>CPF:</Text>
-          <MaskedTextInput
+          <TextInput
             style={styles.input}
-            mask={'999.999.999-99'}
-            onChangeText={setcpf}
+            onChangeText={applyMaskCPF}
             value={cpf}
             placeholder="Ex:000.000.000-00"
+            keyboardType="numeric"
           />
           <Text style={styles.label}>Número para Contato:</Text>
-          <MaskedTextInput
+          <TextInput
             style={styles.input}
-            mask={'(00)0 0000-0000'}
-            onChangeText={setnumero}
+            onChangeText={applyMaskTel}
             value={telefone}
             placeholder="Ex:(00)0 0000-0000"
+            keyboardType="numeric"
           />
           <Text style={styles.label}>Data de Nascimento:</Text>
-          <MaskedTextInput
+          <TextInput
             style={styles.input}
-            mask={'99/99/9999'}
             onChangeText={setdata}
             value={data_nascimento}
             placeholder="Ex:DD/MM/AAAA"

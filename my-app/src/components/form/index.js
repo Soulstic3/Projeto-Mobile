@@ -67,7 +67,7 @@ export default function Form() {
 
                 <TouchableOpacity
                     style={styles.buttonClean}
-                    onPress={navigateToHome}
+                    onPress={handleSubmit}
                 >
                     <Text style={styles.textButtonClean}>{textButton}</Text>
                 </TouchableOpacity>
