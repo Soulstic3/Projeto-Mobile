@@ -30,25 +30,31 @@ export default function Cadastro() {
     { label: 'Não-binário', value: 'Não-binário' }
   ]);
 
-  function applyMaskCPF (input: string) {
-    const onlyNumbers = input.replace(/\D/g, "")
+  function applyMaskCPF (value) {
+    const onlyNumbers = value.replace(/\D/g, "")
     if(onlyNumbers.length === 11){
       const cpf = cpfApplyMask(onlyNumbers)
       return setcpf(cpf)
+    }else{
+      setcpf(value);
     }
   }
-  function applyMaskSUS (input: string) {
-    const onlyNumbers = input.replace(/\D/g, "")
+  function applyMaskSUS (value) {
+    const onlyNumbers = value.replace(/\D/g, "")
     if(onlyNumbers.length === 15){
       const sus = susApplyMask(onlyNumbers)
       return setsus(sus)
+    }else{
+      setsus(value);
     }
   }
-  function applyMaskTel (input: string) {
-    const onlyNumbers = input.replace(/\D/g, "")
+  function applyMaskTel (value) {
+    const onlyNumbers = value.replace(/\D/g, "")
     if(onlyNumbers.length === 11){
       const tel = telApplyMask(onlyNumbers)
       return setnumero(tel)
+    }else{
+      setnumero(value);
     }
   }
 
@@ -80,7 +86,7 @@ export default function Cadastro() {
           <Text style={styles.label}>Cartão do SUS:</Text>
           <TextInput
             style={styles.input}
-            onChangeText={applyMaskSUS}
+            onChangeText={(value) => applyMaskSUS(value, setsus)}
             value={numero_cadsus}
             placeholder="Ex:000.0000.0000.0000"
             keyboardType="numeric"
@@ -88,7 +94,7 @@ export default function Cadastro() {
           <Text style={styles.label}>CPF:</Text>
           <TextInput
             style={styles.input}
-            onChangeText={applyMaskCPF}
+            onChangeText={(value) => applyMaskCPF(value, setcpf)}
             value={cpf}
             placeholder="Ex:000.000.000-00"
             keyboardType="numeric"
@@ -96,7 +102,7 @@ export default function Cadastro() {
           <Text style={styles.label}>Número para Contato:</Text>
           <TextInput
             style={styles.input}
-            onChangeText={applyMaskTel}
+            onChangeText={(value) => applyMaskTel(value, setnumero)}
             value={telefone}
             placeholder="Ex:(00)0 0000-0000"
             keyboardType="numeric"
