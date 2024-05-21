@@ -4,7 +4,7 @@ import { Alert } from 'react-native';
 
 const handleFormSubmit = (data, navigation) => {
 
-  const url = `${BASE_URL}/cadastro`;
+  const url = `${BASE_URL}/users/cadastro`;
   const handleSubmitError = (error) => { 
     console.error('Error sending request:', error);
     Alert.alert('Erro', 'Erro ao enviar solicitação');
@@ -23,7 +23,8 @@ const handleFormSubmit = (data, navigation) => {
     }
     return response.json();
   })
-  .then(() => {      // se tudo der certo mostrar alerta ( o then só é executado quando todo o codigo acima já foi execultado)
+  .then(() => {      // se tudo der certo mostrar alerta ( o then só é executado quando todo 
+    //o codigo acima já foi execultado)
     Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
   })
   .catch(handleSubmitError)
