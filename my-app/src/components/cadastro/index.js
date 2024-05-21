@@ -4,6 +4,7 @@ import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-nativ
 import { useNavigation } from "@react-navigation/native";
 import { StyleSheet } from "react-native";
 import DropDownPicker from 'react-native-dropdown-picker';
+import DatePicker from "react-native-modern-datepicker";
 import handleFormSubmit from './formHandler'
 import {cpfApplyMask, susApplyMask, telApplyMask} from "@../../../utils/mask"
 
@@ -11,12 +12,41 @@ import {cpfApplyMask, susApplyMask, telApplyMask} from "@../../../utils/mask"
 export default function Cadastro() {
   const navigation = useNavigation();
 
+  const handleOnPress = () => {
+    setDateButton(!DateButton);
+  };
+
+  const handleChange = (propDate = null) => {
+    setdata(propDate);
+  };
+
+  const [selectedDate, setSelectedDate] = useState(null);
+
+const handleSaveDate = () => {
+  setSelectedDate(data);
+  setModalVisible(false);
+  setDateButton(false);
+};
+
+useEffect(() => {
+  // This effect runs only once, when the component is mounted
+  if (selectedDate) {
+    // Do something with the selected date, e.g. send it to a server
+    console.log("Selected date:", selectedDate);
+  }
+}, [selectedDate]);
+
+
   //Pegar dados do formulario e salvar 
   const [nome, setnome] = useState(null)
   const [numero_cadsus, setsus] = useState(null)
   const [cpf, setcpf] = useState(null)
   const [telefone, setnumero] = useState(null)
+
+  const [DateButton, setDateButton] = useState(false)
   const [data_nascimento, setdata] = useState()
+  const [modalVisible, setModalVisible] = useState(false);
+
   const [senha, setsenha] = useState(null)
   const [ConfSenha, setConfSenha] = useState(null)
   const [textButton, setTextButton] = useState("Cadastrar")
@@ -30,25 +60,31 @@ export default function Cadastro() {
     { label: 'Não-binário', value: 'Não-binário' }
   ]);
 
-  function applyMaskCPF (input: string) {
-    const onlyNumbers = input.replace(/\D/g, "")
+  function applyMaskCPF (value) {
+    const onlyNumbers = value.replace(/\D/g, "")
     if(onlyNumbers.length === 11){
       const cpf = cpfApplyMask(onlyNumbers)
       return setcpf(cpf)
+    }else{
+      setcpf(value);
     }
   }
-  function applyMaskSUS (input: string) {
-    const onlyNumbers = input.replace(/\D/g, "")
+  function applyMaskSUS (value) {
+    const onlyNumbers = value.replace(/\D/g, "")
     if(onlyNumbers.length === 15){
       const sus = susApplyMask(onlyNumbers)
       return setsus(sus)
+    }else{
+      setsus(value);
     }
   }
-  function applyMaskTel (input: string) {
-    const onlyNumbers = input.replace(/\D/g, "")
+  function applyMaskTel (value) {
+    const onlyNumbers = value.replace(/\D/g, "")
     if(onlyNumbers.length === 11){
       const tel = telApplyMask(onlyNumbers)
       return setnumero(tel)
+    }else{
+      setnumero(value);
     }
   }
 
@@ -80,7 +116,7 @@ export default function Cadastro() {
           <Text style={styles.label}>Cartão do SUS:</Text>
           <TextInput
             style={styles.input}
-            onChangeText={applyMaskSUS}
+            onChangeText={(value) => applyMaskSUS(value, setsus)}
             value={numero_cadsus}
             placeholder="Ex:000.0000.0000.0000"
             keyboardType="numeric"
@@ -88,7 +124,7 @@ export default function Cadastro() {
           <Text style={styles.label}>CPF:</Text>
           <TextInput
             style={styles.input}
-            onChangeText={applyMaskCPF}
+            onChangeText={(value) => applyMaskCPF(value, setcpf)}
             value={cpf}
             placeholder="Ex:000.000.000-00"
             keyboardType="numeric"
@@ -96,17 +132,55 @@ export default function Cadastro() {
           <Text style={styles.label}>Número para Contato:</Text>
           <TextInput
             style={styles.input}
-            onChangeText={applyMaskTel}
+            onChangeText={(value) => applyMaskTel(value, setnumero)}
             value={telefone}
             placeholder="Ex:(00)0 0000-0000"
             keyboardType="numeric"
           />
           <Text style={styles.label}>Data de Nascimento:</Text>
+          <TouchableOpacity 
+        onPress={handleOnPress}
+        style={styles.buttonData}
+        >
+          <Text style={styles.textData}>Selecione a data</Text>
+        </TouchableOpacity>
+
+        <Modal
+        animationType="slide"
+        transparent={true}
+        visible={DateButton}
+        >
+          <View style={styles.centerView}>
+            <View style={styles.modalView}>
+
+             <TouchableOpacity 
+            onPress={handleOnPress}
+            style={styles.buttonfechar}>
+              <Text style={styles.textData}>Fechar</Text>
+            </TouchableOpacity> 
+
+                <DatePicker
+                mode="calendar"
+                selected={data_nascimento}
+                onDateChange={handleChange}
+                minimumDate="1900-01-01"
+                maximumDate="2100-12-31"
+                />
+
+              <TouchableOpacity onPress={handleSaveDate} style={styles.buttonsave}>
+                <Text style={styles.textData}>Salvar</Text>
+              </TouchableOpacity>
+              
+            </View>
+          </View>
+
+        </Modal>
+
+        <Text style={styles.label}>Data selecionada:</Text>
           <TextInput
-            style={styles.input}
-            onChangeText={setdata}
-            value={data_nascimento}
-            placeholder="Ex:DD/MM/AAAA"
+            style={styles.dateInput}
+            value={selectedDate}
+            editable={false}
           />
           <Text style={styles.label}>Selecione seu Gênero:</Text>
           <View style={styles.dropdownContainer}>
@@ -207,5 +281,56 @@ const styles = StyleSheet.create({
   },
   dropdownContainer: {
     maxHeight: 100,
+  },
+  centerView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    width: "90%",
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    textShadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  buttonData: {
+    backgroundColor: "#1E90FF",
+    width: "40%",
+    alignItems: "center",
+    borderRadius: 5,
+    padding: 3,
+    margin: 5,
+    marginBottom: 10,
+  },
+  textData: {
+    color: "#FFFFFF",
+    fontSize: 15,
+  },
+  buttonfechar:{
+    backgroundColor: "#1E90FF",
+    width: "40%",
+    alignItems: "center",
+    borderRadius: 5,
+    padding: 2,
+    position: "absolute",
+    top: 10,
+  },
+  buttonsave: {
+    backgroundColor: "#1E90FF",
+    width: "40%",
+    alignItems: "center",
+    borderRadius: 5,
+    padding: 2,
   },
 })
