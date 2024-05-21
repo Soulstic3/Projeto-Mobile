@@ -3,23 +3,18 @@ import  AntDesign  from "@expo/vector-icons/AntDesign";
 import React from "react";
 import { useState } from "react";
 import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, TouchableOpacity } from "react-native";
-import * as ImagePicker from 'expo-image-picker';
+import handleImagePicker from "./handleBlob";
+import fetchUserData from "./fetchUser";
 
 const defaultImage = require('../assets/img/profile-pic.jpg') // imagem padrao
 
 export default function Perfil() {
     const [image, setImage] = useState('');
+    const userData = fetchUserData(userId);
 
-    const handleImagePicker = async () => { //usando metodo async para esperar o usuario enviar a imagem
-       const result = await ImagePicker.launchImageLibraryAsync({
-            aspect: [4,4], // deixar imagem quadrada
-            allowsEditing: true, // deixar o usuario cortar a imagem como ele quiser
-            base64: true,
-            quality: 1, // nao perder qualidade
-        });
-        if (!result.canceled) { // se o usuario nao cancelar salvar imagem
-            setImage(result.assets[0].uri); 
-        }
+
+    const navigateToEndereco = () => {
+        navigation.navigate("Endereço");
     };
 
     return(
@@ -34,7 +29,7 @@ export default function Perfil() {
                 <View  style= {styles.formContainer}>
                     <View style={{alignSelf: "center"}}>
                         <View style={styles.profileImage}>
-                            <Image source={image ? {uri:image} : defaultImage}  // se o usuario nao definir imagem usar imagem padrao
+                            <Image source={image ? {uri:image} : defaultImage} 
                                 style={styles.image} 
                                 resizeMode="center"></Image>                              
                         </View>
@@ -53,34 +48,34 @@ export default function Perfil() {
                     </View>
                     <View style={styles.infoContainer}>
                         <Text style={styles.text}>Nome:</Text>
-                        <Text style={styles.dados}></Text>
+                        <Text style={styles.dados}>{userData.nome}</Text>
                         <Text style={styles.text}>CPF:</Text>
-                        <Text style={styles.dados}></Text>
+                        <Text style={styles.dados}>{userData.cpf}</Text>
                         <Text style={styles.text}>Data de nascimento:</Text>
-                        <Text style={styles.dados}></Text>
+                        <Text style={styles.dados}>{userData.data_nascimento}</Text>
                         <Text style={styles.text}>Cartão do sus::</Text>
-                        <Text style={styles.dados}></Text>
+                        <Text style={styles.dados}>{userData.numero_cadsus}</Text>
                         <Text style={styles.text}>Sexo:</Text>
-                        <Text style={styles.dados}></Text>
+                        <Text style={styles.dados}>{userData.sexo}</Text>
                         <Text style={styles.text}>Telefone:</Text>
-                        <Text style={styles.dados}></Text>
+                        <Text style={styles.dados}>{userData.telefone}</Text>
                         <Text style={styles.text}>Endereço:</Text>
-                        <Text style={styles.dados}></Text>
+                        <Text style={styles.dados}>{userData.endereco}</Text>
                         <Text style={styles.text}>Bairro:</Text>
-                        <Text style={styles.dados}></Text>
+                        <Text style={styles.dados}>{userData.bairro}</Text>
                         <Text style={styles.text}>CEP:</Text>
-                        <Text style={styles.dados}></Text>
+                        <Text style={styles.dados}>{userData.cep}</Text>
                     </View>
                         <View style={styles.botao}>
-                            <TouchableOpacity>
-                                onPress={navigateToAtualizar}
+                            <TouchableOpacity onPress={navigateToEndereco}>
+                                <Text style={styles.textData}>Cadastrar Endereço</Text>
                             </TouchableOpacity>
                         </View>
                 </View>
             </ScrollView>
         </SafeAreaView>
     )
-}
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -100,6 +95,10 @@ const styles = StyleSheet.create({
         fontSize: 20,
         marginTop: 20
     },
+    textData: {
+        color: "#FFFFFF",
+        fontSize: 15,
+      },
     dados:{
         fontWeight: "300",
         fontSize: 20,

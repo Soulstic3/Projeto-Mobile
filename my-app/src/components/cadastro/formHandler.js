@@ -26,11 +26,9 @@ const handleFormSubmit = (data, navigation) => {
   .then(() => {      // se tudo der certo mostrar alerta ( o then só é executado quando todo 
     //o codigo acima já foi execultado)
     Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
+    navigation.navigate(inicial);
   })
   .catch(handleSubmitError)
-  .finally(() => {  // por ultimo navegar para inicial
-    navigation.navigate(inicial);
-  });
 };
 
 export default handleFormSubmit;

@@ -1,6 +1,6 @@
 import React from "react";
-import { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import { useState, useEffect } from "react";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Modal } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StyleSheet } from "react-native";
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -23,7 +23,7 @@ export default function Cadastro() {
   const [selectedDate, setSelectedDate] = useState(null);
 
 const handleSaveDate = () => {
-  setSelectedDate(data);
+  setSelectedDate(data_nascimento);
   setModalVisible(false);
   setDateButton(false);
 };

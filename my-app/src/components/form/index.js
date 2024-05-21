@@ -22,7 +22,6 @@ export default function Form() {
         handleFormSubmit(
           { cpf, senha },
           navigation,
-          handleSubmitError
         );
       };
     const createAlert = () => Alert.alert(

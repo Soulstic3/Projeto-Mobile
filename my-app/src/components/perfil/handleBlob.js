@@ -1,34 +1,43 @@
-import { Blob } from 'rn-fetch-blob';
-import { BASE_URL } from '../config.js';
+import { BASE_URL } from '../../config.js';
+import * as ImagePicker from 'expo-image-picker';
 
 const url = `${BASE_URL}/`;
 
-const uploadImage = async (uri) => {
-    const apiUrl = url;
-    const formData = new FormData();
-    const blob = await Blob.fromUri(uri);
-    const fileType = blob.filename.split('.').pop(); // extrair exteçao do arquivo .jpeg .png etc
-    formData.append('image', {
-      uri,
-      type: `image/${fileType}`, // definir extenção baseado no tipo de arquivo que o usuario enviar
-      name: `image.${fileType}`,
-    });
 
-    const config = {
-      headers: {
-        'Content-Type': 'ultipart/form-data',
-      },
-    };
+const handleImagePicker = async () => {
+  const url = `${BASE_URL}/upload-image`; 
+  const result = await ImagePicker.launchImageLibraryAsync({
+    aspect: [4, 4],
+    allowsEditing: true,
+    base64: true,
+    quality: 1,
+  });
+
+  if (!result.canceled) {
+    const base64Image = `data:image/jpeg;base64,${result.assets[0].base64}`;
+    const formData = new FormData();
+    formData.append('image', base64Image);
 
     try {
-      const response = await fetch(apiUrl, {
+      const response = await fetch(url, {
         method: 'POST',
-        body: formData,
-        headers: config.headers,
+        body: formData, //buffer
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
-      const data = await response.json();
-      console.log(data);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Image uploaded successfully:', data);
+        setImage(data.imageUrl); // Update the state with the uploaded image URL
+      } else {
+        console.error('Error uploading image:', response.statusText);
+      }
     } catch (error) {
-      console.error(error);
+      console.error('Error uploading image:', error);
     }
-  };
+  }
+};
+
+export default handleImagePicker;
