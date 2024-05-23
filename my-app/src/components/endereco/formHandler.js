@@ -4,7 +4,7 @@ import { Alert } from 'react-native';
 const handleFormSubmit = (data, navigation) => {
 
 
-  const url = `${BASE_URL}/users/cadastro`;
+  const url = `${BASE_URL}/endereco/inserir`;
   const handleSubmitError = (error) => { 
     console.error('Error sending request:', error);
     Alert.alert('Erro', 'Erro ao enviar solicitação');
@@ -30,7 +30,7 @@ const handleFormSubmit = (data, navigation) => {
       Alert.alert('Erro', responseData.error);
     } else {
       Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
-      navigation.navigate("Login");
+      navigation.navigate("Perfil");
     }
   })
   .catch(handleSubmitError)

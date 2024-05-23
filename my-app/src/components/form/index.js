@@ -1,5 +1,6 @@
 import React, { useState, } from "react";
 import { View, TextInput, Text, TouchableOpacity, Alert} from "react-native";
+import { cpfApplyMask } from "@../../../utils/mask"
 
 import { useNavigation } from "@react-navigation/native";
 import { handleFormSubmit } from "./formHandler";
@@ -18,6 +19,16 @@ export default function Form() {
           createAlert();
           return;
         }
+
+        function applyMaskCPF (value) {
+            const onlyNumbers = value.replace(/\D/g, "")
+            if(onlyNumbers.length === 11){
+              const cpf = cpfApplyMask(onlyNumbers)
+              return setcpf(cpf)
+            }else{
+              setcpf(value);
+            }
+          }
     
         handleFormSubmit(
           { cpf, senha },
@@ -38,9 +49,6 @@ export default function Form() {
         navigation.navigate("Cadastro"); // Navega para a tela de cadastro
       };
     
-    const navigateToHome = () => {
-        navigation.navigate("Home")
-    };
 
     return (
         <View style={styles.formContext}>
@@ -49,7 +57,7 @@ export default function Form() {
 
                 <TextInput
                     style={styles.input}
-                    onChangeText={setcpf}
+                    onChangeText={(value) => applyMaskCPF(value, setcpf)}
                     value={cpf}
                     placeholder="000.000.000-00"
                     keyboardType="numeric"
@@ -76,9 +84,7 @@ export default function Form() {
                     onPress={navigateToCadastro}
                 >
                     <Text style={styles.textButtonClean}>{textoButton}</Text>
-                </TouchableOpacity>
-
-                
+                </TouchableOpacity>   
             </View>
         </View>
     )

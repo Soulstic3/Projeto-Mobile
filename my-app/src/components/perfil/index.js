@@ -1,82 +1,115 @@
 import { Ionicons } from "@expo/vector-icons";
-import  AntDesign  from "@expo/vector-icons/AntDesign";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import React from "react";
-import { useState } from "react";
-import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, TouchableOpacity } from "react-native";
+import { useState, useEffect } from "react";
+import { StyleSheet, Text, View, SafeAreaView, Image, FlatList, TouchableOpacity, ActivityIndicator } from "react-native";
 import handleImagePicker from "./handleBlob";
-import fetchUserData from "./fetchUser";
+import { BASE_URL } from '../../config';
+import { useNavigation } from "@react-navigation/native";
 
-const defaultImage = require('../assets/img/profile-pic.jpg') // imagem padrao
 
 export default function Perfil() {
+    const navigation = useNavigation();
     const [image, setImage] = useState('');
-    const userData = fetchUserData(userId);
-
+    const [loading, setLoading] = useState(true);
+    const [dados, setDados] = useState([]);
 
     const navigateToEndereco = () => {
-        navigation.navigate("Endereço");
+        navigation.navigate("Endereco");
     };
+    const url = `${BASE_URL}/users/perfil`;
 
-    return(
 
-
+    useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const response = await fetch(url); 
+            const json = await response.json();
+            setDados(json);
+            setLoading(false);
+          } catch (error) {
+            console.error(error);
+            setLoading(false);
+          }
+        };
+    
+        fetchData();
+      }, []);
+    
+      if (loading) {
+        return (
+          <View style={styles.container}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        );
+      }
+    
+      if (!dados) {
+        return (
+          <View style={styles.container}>
+            <Text style={styles.text}>Erro ao carregar os dados</Text>
+          </View>
+        );
+    }
+    const renderItem = ({ item }) => (
+        <View style={styles.infoContainer}>
+          <Text style={styles.text}>Nome:</Text>
+          <Text style={styles.dados}>{item.nome}</Text>
+          <Text style={styles.text}>CPF:</Text>
+          <Text style={styles.dados}>{item.cpf}</Text>
+          <Text style={styles.text}>Data de Nascimento:</Text>
+          <Text style={styles.dados}>{item.data_nascimento}</Text>
+          <Text style={styles.text}>Número do CADSUS:</Text>
+          <Text style={styles.dados}>{item.numero_cadsus}</Text>
+          <Text style={styles.text}>Sexo:</Text>
+          <Text style={styles.dados}>{item.sexo}</Text>
+          <Text style={styles.text}>Telefone:</Text>
+          <Text style={styles.dados}>{item.telefone}</Text>
+        </View>
+      );
+    
+      return (
         <SafeAreaView style={styles.container}>
-            <ScrollView showsVerticalScrollIndicator={false}>
-                <View style={styles.titleBar}>
-                    <Ionicons name="arrow-back" size={24} color="#52575D"></Ionicons>
-                </View>
-
-                <View  style= {styles.formContainer}>
-                    <View style={{alignSelf: "center"}}>
-                        <View style={styles.profileImage}>
-                            <Image source={image ? {uri:image} : defaultImage} 
-                                style={styles.image} 
-                                resizeMode="center"></Image>                              
-                        </View>
-                        <TouchableOpacity style={styles.icone}
-                            onPress={handleImagePicker}>
-                                <AntDesign name="edit" size={24} color="black" />
-                        </TouchableOpacity>
+          <View style={styles.formContainer}>
+              <FlatList
+                data={dados}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={renderItem}
+                ListHeaderComponent={
+                  <View style={styles.headerContainer}>
+                    <View style={styles.titleBar}>
+                      <Ionicons name="arrow-back" size={24} color="#52575D" />
                     </View>
-                    
-                    <View style={styles.infoContainer}>
-                        <Text style={styles.nome}></Text>
-                    </View>
-
-                    <View style={styles.infoContainer}>
-                        <Text style={styles.text}>Seus dados:</Text>
+                    <View style={{ alignSelf: "center" }}>
+                      <View style={styles.profileImage}>
+                        <Image
+                          source={image ? { uri: image } : require('../assets/img/profile-pic.jpg')} // Substitua pelo caminho correto da sua imagem padrão
+                          style={styles.image}
+                          resizeMode="center"
+                        />
+                      </View>
+                      <TouchableOpacity style={styles.icone} onPress={handleImagePicker}>
+                        <AntDesign name="edit" size={24} color="black" />
+                      </TouchableOpacity>
                     </View>
                     <View style={styles.infoContainer}>
-                        <Text style={styles.text}>Nome:</Text>
-                        <Text style={styles.dados}>{userData.nome}</Text>
-                        <Text style={styles.text}>CPF:</Text>
-                        <Text style={styles.dados}>{userData.cpf}</Text>
-                        <Text style={styles.text}>Data de nascimento:</Text>
-                        <Text style={styles.dados}>{userData.data_nascimento}</Text>
-                        <Text style={styles.text}>Cartão do sus::</Text>
-                        <Text style={styles.dados}>{userData.numero_cadsus}</Text>
-                        <Text style={styles.text}>Sexo:</Text>
-                        <Text style={styles.dados}>{userData.sexo}</Text>
-                        <Text style={styles.text}>Telefone:</Text>
-                        <Text style={styles.dados}>{userData.telefone}</Text>
-                        <Text style={styles.text}>Endereço:</Text>
-                        <Text style={styles.dados}>{userData.endereco}</Text>
-                        <Text style={styles.text}>Bairro:</Text>
-                        <Text style={styles.dados}>{userData.bairro}</Text>
-                        <Text style={styles.text}>CEP:</Text>
-                        <Text style={styles.dados}>{userData.cep}</Text>
+                      <Text style={styles.text}>Seus dados:</Text>
                     </View>
-                        <View style={styles.botao}>
-                            <TouchableOpacity onPress={navigateToEndereco}>
-                                <Text style={styles.textData}>Cadastrar Endereço</Text>
-                            </TouchableOpacity>
-                        </View>
-                </View>
-            </ScrollView>
+                  </View>
+                }
+                ListFooterComponent={
+                  <View>
+                    <TouchableOpacity style={styles.botao} onPress={navigateToEndereco}>
+                      <Text style={styles.textData}>Endereço</Text>
+                    </TouchableOpacity>
+                  </View>
+                }
+              />
+          </View>
         </SafeAreaView>
-    )
-};
-
+      );
+      };
+    
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -85,21 +118,17 @@ const styles = StyleSheet.create({
     icone: {
         alignSelf: "flex-end",
     },
-    nome: {
-        color: "#52575D",
-        fontWeight: "200", 
-        fontSize: 36
-    },
-    text:{
+    text: {
         fontWeight: "300",
         fontSize: 20,
         marginTop: 20
     },
     textData: {
-        color: "#FFFFFF",
         fontSize: 15,
-      },
-    dados:{
+        alignSelf: "center",
+        color: "#fff"
+    },
+    dados: {
         fontWeight: "300",
         fontSize: 20,
         marginTop: 10,
@@ -129,7 +158,7 @@ const styles = StyleSheet.create({
         overflow: "hidden",
         borderStyle: "solid",
         borderWidth: 1
-        
+
     },
     infoContainer: {
         alignSelf: "center",
@@ -145,7 +174,10 @@ const styles = StyleSheet.create({
     },
     botao: {
         marginTop: 30,
+        padding: 12,
+        borderRadius: 10,
         width: 300,
         alignSelf: "center",
+        backgroundColor: "#3970C9"
     }
 });

@@ -1,8 +1,6 @@
 import { BASE_URL } from '../../config.js';
 import * as ImagePicker from 'expo-image-picker';
 
-const url = `${BASE_URL}/`;
-
 
 const handleImagePicker = async () => {
   const url = `${BASE_URL}/upload-image`; 

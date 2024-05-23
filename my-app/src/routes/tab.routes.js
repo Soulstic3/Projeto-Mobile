@@ -5,6 +5,11 @@ import Home from '../components/home';
 import Main from '../components/main';
 import Title from '../components/title';
 import Cadastro from '../components/cadastro';
+import Perfil from '../components/perfil';
+import Endereco from '../components/endereco';
+import CadEndereco from '../components/cad_endereco';
+import AltEndereco from '../components/alt_endereco';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -35,6 +40,26 @@ function Login() {
         <Stack.Screen
           name="Cadastro"
           component={Cadastro}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Endereco"
+          component={Endereco}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="CadEndereco"
+          component={CadEndereco}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="AltEndereco"
+          component={AltEndereco}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Perfil"
+          component={Perfil}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

@@ -322,9 +322,9 @@ const styles = StyleSheet.create({
     width: "40%",
     alignItems: "center",
     borderRadius: 5,
-    padding: 2,
+    margin: 5,
     position: "absolute",
-    top: 10,
+    bottom: 10,
   },
   buttonsave: {
     backgroundColor: "#1E90FF",

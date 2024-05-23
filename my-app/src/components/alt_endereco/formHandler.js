@@ -4,7 +4,7 @@ import { Alert } from 'react-native';
 const handleFormSubmit = (data, navigation) => {
 
 
-  const url = `${BASE_URL}/users/cadastro`;
+  const url = `${BASE_URL}/endereco/alterar`;
   const handleSubmitError = (error) => { 
     console.error('Error sending request:', error);
     Alert.alert('Erro', 'Erro ao enviar solicitação');
@@ -29,8 +29,8 @@ const handleFormSubmit = (data, navigation) => {
       console.error('API error:', responseData.error);
       Alert.alert('Erro', responseData.error);
     } else {
-      Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
-      navigation.navigate("Login");
+      Alert.alert('Sucesso', 'Endereço alterado com sucesso!');
+      navigation.navigate("Endereco");
     }
   })
   .catch(handleSubmitError)
