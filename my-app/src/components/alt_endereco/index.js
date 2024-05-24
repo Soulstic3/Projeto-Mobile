@@ -2,18 +2,29 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import handleFormSubmit from './formHandler';
 import { useNavigation } from '@react-navigation/native';
+import { cepApplyMask } from "@../../../utils/mask"
 
 
 export default function App() {
     const navigation = useNavigation();
-    const [endereco, setEndereco] = useState(null)
+    const [enderecoReq, setEnderecoReq] = useState(null)
     const [bairro, setBairro] = useState(null)
     const [cep, setCep] = useState(null)
     const [complemento, setComplemento] = useState(null)
 
+    function applyMaskCEP (value) {
+        const onlyNumbers = value.replace(/\D/g, "")
+        if(onlyNumbers.length === 11){
+          const cep = cepApplyMask(onlyNumbers)
+          return setCep(cep)
+        }else{
+          setCep(value);
+        }
+      }
+
     const handleSubmit = () => {
         handleFormSubmit({
-          endereco,
+          enderecoReq,
           bairro,
           cep,
           complemento,
@@ -26,8 +37,8 @@ export default function App() {
                 <Text style={styles.label}>Nome da Rua:</Text>
                 <TextInput
                     style={styles.input}
-                    onChangeText={setEndereco} 
-                    value={endereco} 
+                    onChangeText={setEnderecoReq} 
+                    value={enderecoReq} 
                     placeholder="Ex:R. nome da sua rua"
                     />
                 <Text style={styles.label}>Bairro:</Text>
@@ -40,7 +51,7 @@ export default function App() {
                 <Text style={styles.label}>CEP:</Text>
                 <TextInput
                     style={styles.input}
-                    onChangeText={setCep} 
+                    onChangeText={(value) => applyMaskCEP(value, setCep)} 
                     value={cep} 
                     keyboardType="numeric"
                     placeholder="Ex:50000-000"

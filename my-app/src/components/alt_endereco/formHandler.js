@@ -11,7 +11,7 @@ const handleFormSubmit = (data, navigation) => {
   };
 
   fetch(url, {        // usando fetch para enviar o formulario para a api
-    method: 'POST',   // metodo que é usado na api
+    method: 'PUT',   // metodo que é usado na api
     headers: {
       'Content-Type': 'application/json'
     },

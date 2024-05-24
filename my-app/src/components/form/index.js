@@ -14,22 +14,23 @@ export default function Form() {
     const [senha, setSenha] = useState(null)
     const [textButton, setTextButton] = useState("Acessar")
     const [textoButton, setTextoButton] = useState("Primeiro Acesso")
+
+    function applyMaskCPF (value) {
+        const onlyNumbers = value.replace(/\D/g, "")
+        if(onlyNumbers.length === 11){
+          const cpf = cpfApplyMask(onlyNumbers)
+          return setcpf(cpf)
+        }else{
+          setcpf(value);
+        }
+      }
     const handleSubmit = () => {
         if (!cpf || !senha) {
           createAlert();
           return;
         }
 
-        function applyMaskCPF (value) {
-            const onlyNumbers = value.replace(/\D/g, "")
-            if(onlyNumbers.length === 11){
-              const cpf = cpfApplyMask(onlyNumbers)
-              return setcpf(cpf)
-            }else{
-              setcpf(value);
-            }
-          }
-    
+        
         handleFormSubmit(
           { cpf, senha },
           navigation,

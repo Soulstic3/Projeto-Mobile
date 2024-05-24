@@ -5,9 +5,15 @@ const handleFormSubmit = (data, navigation) => {
 
 
   const url = `${BASE_URL}/endereco/inserir`;
-  const handleSubmitError = (error) => { 
+  const handleSubmitError = (error) => {
     console.error('Error sending request:', error);
-    Alert.alert('Erro', 'Erro ao enviar solicitação');
+    if (error.json) {
+      error.json().then((errorMessage) => {
+        Alert.alert('Erro', errorMessage.message);
+      });
+    } else {
+      Alert.alert('Erro', 'Erro ao enviar solicitação');
+    }
   };
 
   fetch(url, {        // usando fetch para enviar o formulario para a api
@@ -19,18 +25,17 @@ const handleFormSubmit = (data, navigation) => {
   })
   .then(response => {      // pegar resposta da api
     if (!response.ok) {
-      throw new Error(`HTTP error ${response.status}`);
+      throw response
       
     }
     return response.json();
   })
   .then((responseData) => {      // se tudo der certo mostrar alerta ( o then só é executado quando todo 
     if (responseData.error) {
-      console.error('API error:', responseData.error);
-      Alert.alert('Erro', responseData.error);
+      throw new Error(responseData.error);
     } else {
       Alert.alert('Sucesso', 'Endereço cadastrado com sucesso!');
-      navigation.navigate("Endereco");
+      navigation.navigate("Perfil");
     }
   })
   .catch(handleSubmitError)

@@ -20,21 +20,28 @@ export default function App() {
     const url = `${BASE_URL}/endereco/exibir`;
 
 
+    const fetchData = async () => {
+      try {
+        const response = await fetch(url);
+        const json = await response.json();
+        setDados(json);
+        setLoading(false);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+  
     useEffect(() => {
-        const fetchData = async () => {
-          try {
-            const response = await fetch(url); 
-            const json = await response.json();
-            setDados(json);
-            setLoading(false);
-          } catch (error) {
-            console.error(error);
-            setLoading(false);
-          }
-        };
-    
+      fetchData();
+    }, []);
+  
+    useEffect(() => {
+      const unsubscribe = navigation.addListener('focus', () => {
         fetchData();
-      }, []);
+      });
+  
+      return unsubscribe;
+    }, [navigation, fetchData]);
     
       if (loading) {
         return (
