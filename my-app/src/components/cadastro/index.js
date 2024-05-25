@@ -1,94 +1,93 @@
-import React from "react";
-import { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Modal, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { StyleSheet } from "react-native";
 import DropDownPicker from 'react-native-dropdown-picker';
 import DatePicker from "react-native-modern-datepicker";
 import handleFormSubmit from './formHandler'
-import {cpfApplyMask, susApplyMask, telApplyMask} from "@../../../utils/mask"
-
+import { cpfApplyMask, susApplyMask, telApplyMask } from "@../../../utils/mask";
 
 export default function Cadastro() {
   const navigation = useNavigation();
+  
+  const [nome, setNome] = useState("");
+  const [numero_cadsus, setNumeroCadsus] = useState("");
+  const [cpf, setCpf] = useState("");
+  const [telefone, setTelefone] = useState("");
 
-  const handleOnPress = () => {
-    setDateButton(!DateButton);
-  };
-
-  const handleChange = (propDate = null) => {
-    setdata(propDate);
-  };
-
+  //as const relacionada ao datepicker
+  const [dateButton, setDateButton] = useState(false); //sendo usado no modal
+  const [data_nascimento, setDataNascimento] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+  const [inputDate, setInputDate] = useState(""); //sendo usado para selecionar a data em funções
   const [selectedDate, setSelectedDate] = useState(null);
 
-const handleSaveDate = () => {
-  setSelectedDate(data);
-  setModalVisible(false);
-  setDateButton(false);
-};
-
-useEffect(() => {
-  // This effect runs only once, when the component is mounted
-  if (selectedDate) {
-    // Do something with the selected date, e.g. send it to a server
-    console.log("Selected date:", selectedDate);
-  }
-}, [selectedDate]);
-
-
-  //Pegar dados do formulario e salvar 
-  const [nome, setnome] = useState(null)
-  const [numero_cadsus, setsus] = useState(null)
-  const [cpf, setcpf] = useState(null)
-  const [telefone, setnumero] = useState(null)
-
-  const [DateButton, setDateButton] = useState(false)
-  const [data_nascimento, setdata] = useState()
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const [senha, setsenha] = useState(null)
-  const [ConfSenha, setConfSenha] = useState(null)
-  const [textButton, setTextButton] = useState("Cadastrar")
-
-  //dropbar configuração
-  const [open, setOpen] = useState(false);
+  const [senha, setSenha] = useState("");
+  const [confSenha, setConfSenha] = useState("");
   const [sexo, setSexo] = useState(null);
+  const [open, setOpen] = useState(false);
   const [items, setItems] = useState([
     { label: 'Masculino', value: 'Masculino' },
     { label: 'Feminino', value: 'Feminino' },
     { label: 'Não-binário', value: 'Não-binário' }
   ]);
 
-  function applyMaskCPF (value) {
-    const onlyNumbers = value.replace(/\D/g, "")
-    if(onlyNumbers.length === 11){
-      const cpf = cpfApplyMask(onlyNumbers)
-      return setcpf(cpf)
-    }else{
-      setcpf(value);
-    }
-  }
-  function applyMaskSUS (value) {
-    const onlyNumbers = value.replace(/\D/g, "")
-    if(onlyNumbers.length === 15){
-      const sus = susApplyMask(onlyNumbers)
-      return setsus(sus)
-    }else{
-      setsus(value);
-    }
-  }
-  function applyMaskTel (value) {
-    const onlyNumbers = value.replace(/\D/g, "")
-    if(onlyNumbers.length === 11){
-      const tel = telApplyMask(onlyNumbers)
-      return setnumero(tel)
-    }else{
-      setnumero(value);
-    }
-  }
+  //função para traduzir a data para o formado br que não está funcionando sabe se la o pq
+  const formatDate = (date) => {
+    return date.toLocaldateString('pt-BR', {
+      day: "2-digits",
+      month: "2-digits",
+      year: "numeric"
+    });
+  };
 
-  //enviar dados para o formhandler
+
+  //função que atualiza a data selecionada no datepicker
+  const handleChange = (propDate) => {
+    setDataNascimento(propDate);
+  };
+  //função que salva a data
+  const handleSaveDate = () => {
+    setSelectedDate(data_nascimento);
+    setInputDate(data_nascimento);
+    setDateButton(false);
+  };
+//Função que mostra a data selecionada no input
+  useEffect(() => {
+    if (selectedDate) {
+      console.log("Selected date:", selectedDate);
+    }
+  }, [selectedDate]);
+
+  const applyMaskCPF = (value) => {
+    const onlyNumbers = value.replace(/\D/g, "");
+    if (onlyNumbers.length === 11) {
+      const cpf = cpfApplyMask(onlyNumbers);
+      return setCpf(cpf);
+    } else {
+      setCpf(value);
+    }
+  };
+
+  const applyMaskSUS = (value) => {
+    const onlyNumbers = value.replace(/\D/g, "");
+    if (onlyNumbers.length === 15) {
+      const sus = susApplyMask(onlyNumbers);
+      return setNumeroCadsus(sus);
+    } else {
+      setNumeroCadsus(value);
+    }
+  };
+
+  const applyMaskTel = (value) => {
+    const onlyNumbers = value.replace(/\D/g, "");
+    if (onlyNumbers.length === 11) {
+      const tel = telApplyMask(onlyNumbers);
+      return setTelefone(tel);
+    } else {
+      setTelefone(value);
+    }
+  };
+
   const handleSubmit = () => {
     handleFormSubmit({
       nome,
@@ -102,21 +101,21 @@ useEffect(() => {
   };
 
   return (
-    <View style={styles.boxTitle}>  
+    <View style={styles.boxTitle}>
       <Text style={styles.TextTitle}>Página de Cadastro</Text>
       <ScrollView>
-        <View style={styles.FormContext}>  
+        <View style={styles.FormContext}>
           <Text style={styles.label}>Nome Completo:</Text>
           <TextInput
             style={styles.input}
-            onChangeText={setnome} // quando digitar chamar o setState
-            value={nome} // nome do valor
-            placeholder="Ex:Amanda" // texto que vai aparecer dentro do input
+            onChangeText={setNome}
+            value={nome}
+            placeholder="Ex:Amanda"
           />
           <Text style={styles.label}>Cartão do SUS:</Text>
           <TextInput
             style={styles.input}
-            onChangeText={(value) => applyMaskSUS(value, setsus)}
+            onChangeText={(value) => applyMaskSUS(value)}
             value={numero_cadsus}
             placeholder="Ex:000.0000.0000.0000"
             keyboardType="numeric"
@@ -124,7 +123,7 @@ useEffect(() => {
           <Text style={styles.label}>CPF:</Text>
           <TextInput
             style={styles.input}
-            onChangeText={(value) => applyMaskCPF(value, setcpf)}
+            onChangeText={(value) => applyMaskCPF(value)}
             value={cpf}
             placeholder="Ex:000.000.000-00"
             keyboardType="numeric"
@@ -132,56 +131,65 @@ useEffect(() => {
           <Text style={styles.label}>Número para Contato:</Text>
           <TextInput
             style={styles.input}
-            onChangeText={(value) => applyMaskTel(value, setnumero)}
+            onChangeText={(value) => applyMaskTel(value)}
             value={telefone}
             placeholder="Ex:(00)0 0000-0000"
             keyboardType="numeric"
           />
           <Text style={styles.label}>Data de Nascimento:</Text>
-          <TouchableOpacity 
-        onPress={handleOnPress}
-        style={styles.buttonData}
-        >
-          <Text style={styles.textData}>Selecione a data</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              console.log("onPress chamado");
+              setDateButton(true);
+            }}
+          >
+            <TextInput
+              style={styles.input}
+              value={inputDate}
+              onChangeText={text => setInputDate(text)}
+              placeholder="YYYY/MM/DD"
+              editable={false}
+            />
+          </TouchableOpacity>
 
-        <Modal
-        animationType="slide"
-        transparent={true}
-        visible={DateButton}
-        >
-          <View style={styles.centerView}>
-            <View style={styles.modalView}>
-
-             <TouchableOpacity 
-            onPress={handleOnPress}
-            style={styles.buttonfechar}>
-              <Text style={styles.textData}>Fechar</Text>
-            </TouchableOpacity> 
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={dateButton}
+          >
+            <View style={styles.centerView}>
+              <View style={styles.modalView}>
+                <TouchableOpacity
+                  onPress={() => setDateButton(false)}
+                  style={styles.buttonfechar}
+                >
+                  <Text style={styles.textData}>Fechar</Text>
+                </TouchableOpacity>
 
                 <DatePicker
-                mode="calendar"
-                selected={data_nascimento}
-                onDateChange={handleChange}
-                minimumDate="1900-01-01"
-                maximumDate="2100-12-31"
-                />
+                  mode="calendar"
+                  selected={data_nascimento}
+                  onDateChange={handleChange}
+                  minimumDate="1900-01-01"
+                  maximumDate="2100-12-31"             
+                >
+                  {({ onChange, value }) => (
+                    <TextInput
+                      value={formatDate(value)} // Chama a função formatDate para formatar a data
+                      onChangeText={onChange}
+                      placeholder="Selecione a data"
+                      editable={false}
+                    />
+                  )}
+                </DatePicker>
 
-              <TouchableOpacity onPress={handleSaveDate} style={styles.buttonsave}>
-                <Text style={styles.textData}>Salvar</Text>
-              </TouchableOpacity>
-              
+                <TouchableOpacity onPress={handleSaveDate} style={styles.buttonsave}>
+                  <Text style={styles.textData}>Salvar</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
+          </Modal>
 
-        </Modal>
-
-        <Text style={styles.label}>Data selecionada:</Text>
-          <TextInput
-            style={styles.dateInput}
-            value={selectedDate}
-            editable={false}
-          />
           <Text style={styles.label}>Selecione seu Gênero:</Text>
           <View style={styles.dropdownContainer}>
             <DropDownPicker
@@ -198,7 +206,7 @@ useEffect(() => {
           <Text style={styles.label}>Crie sua Senha:</Text>
           <TextInput
             style={styles.input}
-            onChangeText={setsenha}
+            onChangeText={setSenha}
             value={senha}
             placeholder="Senha"
             secureTextEntry={true}
@@ -207,20 +215,19 @@ useEffect(() => {
           <TextInput
             style={styles.input}
             onChangeText={setConfSenha}
-            value={senha}
+            value={confSenha}
             placeholder="Senha"
             secureTextEntry={true}
           />
-          <TouchableOpacity style={styles.buttonClean}onPress={handleSubmit}>
+          <TouchableOpacity style={styles.buttonClean} onPress={handleSubmit}>
             <Text style={styles.textButtonClean}>Cadastrar</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
     </View>
-  )
+  );
 };
 
-//estilização em css
 const styles = StyleSheet.create({
   FormContext: {
     padding: 10,
@@ -304,20 +311,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  buttonData: {
-    backgroundColor: "#1E90FF",
-    width: "40%",
-    alignItems: "center",
-    borderRadius: 5,
-    padding: 3,
-    margin: 5,
-    marginBottom: 10,
-  },
-  textData: {
-    color: "#FFFFFF",
-    fontSize: 15,
-  },
-  buttonfechar:{
+  buttonfechar: {
     backgroundColor: "#1E90FF",
     width: "40%",
     alignItems: "center",
@@ -333,4 +327,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 2,
   },
-})
+  textData: {
+    color: "#FFFFFF",
+    fontSize: 15,
+  },
+});
