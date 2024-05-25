@@ -4,16 +4,10 @@ import { Alert } from 'react-native';
 const handleFormSubmit = (data, navigation) => {
 
 
-  const url = `${BASE_URL}/users/cadastro`;
-  const handleSubmitError = (error) => {
+  const url = `${BASE_URL}/endereco/inserir`;
+  const handleSubmitError = (error) => { 
     console.error('Error sending request:', error);
-    if (error.json) {
-      error.json().then((errorMessage) => {
-        Alert.alert('Erro', errorMessage.message || 'Erro ao realizar cadastro verifique seus dados');
-      });
-    } else {
-      Alert.alert('Erro', 'Erro ao enviar solicitação');
-    }
+    Alert.alert('Erro', 'Erro ao enviar solicitação');
   };
 
   fetch(url, {        // usando fetch para enviar o formulario para a api
@@ -25,17 +19,18 @@ const handleFormSubmit = (data, navigation) => {
   })
   .then(response => {      // pegar resposta da api
     if (!response.ok) {
-      throw response
+      throw new Error(`HTTP error ${response.status}`);
       
     }
     return response.json();
   })
   .then((responseData) => {      // se tudo der certo mostrar alerta ( o then só é executado quando todo 
     if (responseData.error) {
-      throw new Error(responseData.error);
+      console.error('API error:', responseData.error);
+      Alert.alert('Erro', responseData.error);
     } else {
       Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
-      navigation.navigate("Login");
+      navigation.navigate("Perfil");
     }
   })
   .catch(handleSubmitError)

@@ -159,19 +159,12 @@ export default function Cadastro() {
           >
             <View style={styles.centerView}>
               <View style={styles.modalView}>
-                <TouchableOpacity
-                  onPress={() => setDateButton(false)}
-                  style={styles.buttonfechar}
-                >
-                  <Text style={styles.textData}>Fechar</Text>
-                </TouchableOpacity>
-
                 <DatePicker
                   mode="calendar"
                   selected={data_nascimento}
                   onDateChange={handleChange}
                   minimumDate="1900-01-01"
-                  maximumDate="2100-12-31"             
+                  maximumDate="2100-12-31"
                 >
                   {({ onChange, value }) => (
                     <TextInput
@@ -182,13 +175,18 @@ export default function Cadastro() {
                     />
                   )}
                 </DatePicker>
-
-                <TouchableOpacity onPress={handleSaveDate} style={styles.buttonsave}>
-                  <Text style={styles.textData}>Salvar</Text>
-                </TouchableOpacity>
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity onPress={() => setDateButton(false)} style={styles.buttonfechar}>
+                    <Text style={styles.textData}>Fechar</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={handleSaveDate} style={styles.buttonsave}>
+                    <Text style={styles.textData}>Salvar</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </Modal>
+
 
           <Text style={styles.label}>Selecione seu Gênero:</Text>
           <View style={styles.dropdownContainer}>
@@ -248,7 +246,7 @@ const styles = StyleSheet.create({
     margin: 5,
     paddingLeft: 10,
     borderStyle: "solid",
-    borderWidth: 1
+    borderWidth: 1,
   },
   boxTitle: {
     paddingRight: 10,
@@ -256,7 +254,7 @@ const styles = StyleSheet.create({
     height: "100%",
     backgroundColor: "#1E90FF",
     fontSize: 22,
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   label: {
     fontSize: 15,
@@ -273,7 +271,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     marginLeft: 12,
-    margin: 10
+    margin: 10,
   },
   textButtonClean: {
     fontSize: 22,
@@ -284,7 +282,7 @@ const styles = StyleSheet.create({
     paddingTop: 30,
     color: "#FFFFFF",
     fontSize: 36,
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   dropdownContainer: {
     maxHeight: 100,
@@ -311,21 +309,27 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    marginTop: 10,
+  },
   buttonfechar: {
     backgroundColor: "#1E90FF",
-    width: "40%",
+    flex: 1,
     alignItems: "center",
     borderRadius: 5,
-    padding: 2,
-    position: "absolute",
-    top: 10,
+    margin: 5,
+    padding: 10,
   },
   buttonsave: {
     backgroundColor: "#1E90FF",
-    width: "40%",
+    flex: 1,
     alignItems: "center",
     borderRadius: 5,
-    padding: 2,
+    margin: 5,
+    padding: 10,
   },
   textData: {
     color: "#FFFFFF",

@@ -1,27 +1,35 @@
-import { BASE_URL } from "../../config";
+import { Alert } from 'react-native';
+import { BASE_URL } from '../../config';
 
-export const handleFormSubmit = async (credentials, navigation, handleSubmitError) => {
-        const url = `${BASE_URL}/login`;
-        console.log(credentials)
-        try {
-          const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(credentials)
-          });
-      
-          const data = await response.json();
-      
-          if (!response.ok) {
-            throw new Error(data.message || 'Failed to login');
-          }
-      
-          // handle successful login
-          console.log('Login successful:', data);
-          navigation.navigate('Home'); // replace 'Home' with the name of your home screen
-        } catch (error) {
-          handleSubmitError(error);
-        }
-      };
+export const handleFormSubmit = async ({ cpf, senha }, navigation, handleSubmitError) => {
+  const url = `${BASE_URL}/users/login`;
+  
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ cpf, senha }),
+    });
+    
+    if (!response.ok) {
+      throw response;
+    }
+    
+    const data = await response.json();
+    navigation.navigate("Home");
+    
+  } catch (error) {
+    if (error.json) {
+      error.json().then(errorMessage => {
+        console.error('Error sending request:', errorMessage.message);
+        handleSubmitError(Alert.alert(errorMessage.message));
+      });
+    } else {
+      console.error('Error sending request:', error);
+      handleSubmitError("Erro ao enviar solicitação");
+    }
+    
+  }
+};

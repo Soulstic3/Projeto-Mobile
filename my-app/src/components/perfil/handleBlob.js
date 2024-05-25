@@ -1,34 +1,50 @@
-import { Blob } from 'rn-fetch-blob';
-import { BASE_URL } from '../config.js';
+import { BASE_URL } from '../../config.js';
+import * as ImagePicker from 'expo-image-picker';
+import * as ImageManipulator from 'expo-image-manipulator';
+import { Alert } from 'react-native';
 
-const url = `${BASE_URL}/`;
+const handleImagePicker = async () => {
+  const url = `${BASE_URL}/upload-image`; 
+  const result = await ImagePicker.launchImageLibraryAsync({
+    aspect: [4, 4], 
+    allowsEditing: true,
+    quality: 1,
+  });
 
-const uploadImage = async (uri) => {
-    const apiUrl = url;
+  if (!result.canceled) {
+    const manipResult = await ImageManipulator.manipulateAsync(
+      result.assets[0].uri,
+      [{ resize: { width: 400, height: 400 } }],
+      { format: 'jpeg' }
+    );
+    
     const formData = new FormData();
-    const blob = await Blob.fromUri(uri);
-    const fileType = blob.filename.split('.').pop(); // extrair exteçao do arquivo .jpeg .png etc
     formData.append('image', {
-      uri,
-      type: `image/${fileType}`, // definir extenção baseado no tipo de arquivo que o usuario enviar
-      name: `image.${fileType}`,
+      uri: manipResult.uri, 
+      name: 'image.jpg',
+      type: 'image/jpeg',
     });
-
-    const config = {
-      headers: {
-        'Content-Type': 'ultipart/form-data',
-      },
-    };
+    
 
     try {
-      const response = await fetch(apiUrl, {
+      const response = await fetch(url, {
         method: 'POST',
         body: formData,
-        headers: config.headers,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
-      const data = await response.json();
-      console.log(data);
+
+      if (response.ok) {
+        const data = await response.json();
+        Alert.alert('Foto de perfil alterada com sucesso!');
+      } else {
+        console.error('Error uploading image:', response.statusText);
+      }
     } catch (error) {
-      console.error(error);
+      console.error('Error uploading image:', error);
     }
-  };
+  }
+};
+
+export default handleImagePicker;

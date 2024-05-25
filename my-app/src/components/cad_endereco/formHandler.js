@@ -4,12 +4,12 @@ import { Alert } from 'react-native';
 const handleFormSubmit = (data, navigation) => {
 
 
-  const url = `${BASE_URL}/users/cadastro`;
+  const url = `${BASE_URL}/endereco/inserir`;
   const handleSubmitError = (error) => {
     console.error('Error sending request:', error);
     if (error.json) {
       error.json().then((errorMessage) => {
-        Alert.alert('Erro', errorMessage.message || 'Erro ao realizar cadastro verifique seus dados');
+        Alert.alert('Erro', errorMessage.message);
       });
     } else {
       Alert.alert('Erro', 'Erro ao enviar solicitação');
@@ -34,8 +34,8 @@ const handleFormSubmit = (data, navigation) => {
     if (responseData.error) {
       throw new Error(responseData.error);
     } else {
-      Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
-      navigation.navigate("Login");
+      Alert.alert('Sucesso', 'Endereço cadastrado com sucesso!');
+      navigation.navigate("Perfil");
     }
   })
   .catch(handleSubmitError)
