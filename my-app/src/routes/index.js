@@ -7,5 +7,5 @@ export default function Routes(){
         <NavigationContainer>
             <TabRoutes />
         </NavigationContainer>
-    )
+    );
 }

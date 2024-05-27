@@ -4,7 +4,7 @@ import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-nativ
 import { useNavigation } from "@react-navigation/native";
 import { StyleSheet } from "react-native";
 import DropDownPicker from 'react-native-dropdown-picker';
-import FormContext from "../formcontext";
+
 
 
 export default function Cadastro() {
@@ -34,20 +34,6 @@ export default function Cadastro() {
       senha,
       ConfSenha
     };
-    //console.log('Form Data:', formData);
-    fetch('/cadastro', { //caminho incompleto
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(formData)
-    })
-      .then(response => response.json())
-      .then(data => console.log('Response:', data))
-      .catch(error => console.error('Error:', error));
-  };
-
-
 
 const [open, setOpen] = useState(false);
 const [genero, setGenero] = useState(null);
@@ -60,7 +46,7 @@ const [items, setItems] = useState([
 return (
   <View style={styles.boxTitle}>
     <Text style={styles.TextTitle}>Página de Cadastro</Text>
-    <FormContext>
+    <ScrollView>
       <View style={styles.FormContext}>
         <Text style={styles.label}>Nome Completo:</Text>
         <TextInput
@@ -99,16 +85,18 @@ return (
           placeholder="Ex:DD/MM/AAAA"
         />
         <Text style={styles.label}>Selecione seu Gênero:</Text>
-        <DropDownPicker
-          style={styles.input}
-          open={open}
-          value={genero}
-          items={items}
-          setOpen={setOpen}
-          setValue={setGenero}
-          setItems={setItems}
-          placeholder="Masculino"
-        />
+        <View>
+          <DropDownPicker
+            style={styles.input}
+            open={open}
+            value={genero}
+            items={items}
+            setOpen={setOpen}
+            setValue={setGenero}
+            setItems={setItems}
+            placeholder="Masculino"
+          />
+        </View>
         <Text style={styles.label}>Crie sua Senha:</Text>
         <TextInput
           style={styles.input}
@@ -132,9 +120,9 @@ return (
           <Text style={styles.textButtonClean}>{textButton}</Text>
         </TouchableOpacity>
       </View>
-    </FormContext>
+    </ScrollView>
   </View>
-)
+);
 };
 
 const styles = StyleSheet.create({
@@ -195,4 +183,4 @@ const styles = StyleSheet.create({
     fontSize: 36,
     fontWeight: "bold"
   },
-})
+})};

@@ -1,73 +1,275 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState, useRef } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-export function ModalConsulta({ handleClose }){
+
+// Modal de Consulta
+const ConsultaModal = ({ handleClose, handleOKPress }) => (
+    <View style={styles.content}>
+        <Text style={styles.title}>
+            Sua consulta foi marcada! Clique em "OK" para visualizar suas consultas marcadas.
+        </Text>
+        <View style={styles.buttonArea}>
+            <TouchableOpacity style={styles.button} onPress={handleClose}>
+                <Text style={styles.tamanhoText}>Voltar</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={[styles.button, styles.cor]} onPress={handleOKPress}>
+                <Text style={styles.tamanhoText}>OK</Text>
+            </TouchableOpacity>
+        </View>
+    </View>
+);
+
+// Modal de Cancelamento
+const CancelarModal = ({ handleClose, handleCancelPress, textInputRef, text, setText, handlePressIn }) => (
+    <View style={styles.content2}>
+        <Text style={styles.title2}>
+            Deseja cancelar a consulta de data:
+        </Text>
+
+        <View style={styles.containerDatePicker}>
+          <TextInput  // adicionando estilizacao
+            
+            style={styles.datePickerInput}
+            editable={false} // Impede que o usuário edite manualmente o campo
+            placeholder="dia/mês/ano"
+            placeholderTextColor="black" // Alterado
+          />
+        </View>
+      
+        <Text style={styles.title2}>
+            Motivo do cancelamento:
+        </Text>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+            <TextInput 
+            style={styles.motivoCancelamento} 
+            ref={textInputRef}
+            value={text}
+            onChangeText={setText}
+            placeholder="Type here..."
+            multiline={true} // Habilita a entrada de várias linhas de texto
+            onFocus={() => { // Define a posição inicial do cursor para o início do texto quando o TextInput ganha foco
+                if (textInputRef.current) {
+                    textInputRef.current.setNativeProps({ selection: { start: 0, end: 0 } });
+                }
+            }}
+
+            />
+        </TouchableWithoutFeedback>
+        <View style={styles.buttonArea2}>
+            <TouchableOpacity style={styles.button2} onPress={handleClose}>
+                <Text style={styles.texto2}>Voltar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button2} onPress={handleCancelPress}>
+                <Text style={[styles.texto2, styles.cor2]}>Cancelar</Text>
+            </TouchableOpacity>
+        </View>
+    </View>
+);
+
+export function ModalConsulta({ handleClose, activeModal }){
     const navigation = useNavigation();
+
+    const [dateInputValue, setDateInputValue] = useState(''); // texto do placeholder destacado de preto
+   
+
+    const [text, setText] = useState('');
+    const textInputRef = useRef(null);
+  
+    const handlePressIn = (event) => {
+        const { locationX } = event.nativeEvent;
+        const averageCharacterWidth = 7; // Ajuste para uma largura média mais realista dos caracteres
+        const position = Math.round(locationX / averageCharacterWidth);
+    
+        if (textInputRef.current) {
+          textInputRef.current.setNativeProps({ selection: { start: position, end: position } });
+        }
+      };
+
 
     const handleOKPress = () => {
         // Aqui você pode redirecionar para a página desejada
         navigation.navigate("cons_marcada");
+        handleClose(); // Fecha o modal após redirecionar
+         
+    };
+
+   
+
+    const handleCancelPress = () => {
+        // Adicione a lógica de cancelamento aqui
+        console.log('Consulta cancelada!');
+        handleClose(); // Feche o modal após cancelar
+
     };
     return(
         <View style={styles.container}>
-            <View style={styles.content}>
-                <Text style={styles.title}>Sua consulta foi marcada!
-                Clique em "OK" para visualizar suas consultas marcadas.
-                </Text>
-                
-                <View style={styles.buttonArea}>
-                <TouchableOpacity style={styles.button} onPress={ handleClose }>
-                    <Text>Voltar</Text>
-                </TouchableOpacity>
+            {activeModal === 'consulta' && (
+                <ConsultaModal handleClose={handleClose} handleOKPress={handleOKPress} />
 
-                <TouchableOpacity style={styles.button} onPress={handleOKPress}>
-                    <Text>OK</Text>
-                </TouchableOpacity>
-                </View>
+            )}
 
-            </View>
+            {activeModal === 'cancelar' && (
+                <CancelarModal 
+                handleClose={handleClose} 
+                handleCancelPress={handleCancelPress} 
+                textInputRef={textInputRef}
+                text={text}
+                setText={setText}
+                handlePressIn={handlePressIn}
+                />
+
+            )}
+            
         </View>
     );
 }
 
 const styles = StyleSheet.create({
         container: {
-            backgroundColor: "rgba(24, 24, 24, 0.6)",
+            backgroundColor: "rgba(0, 0, 0, 0.8)", // COR DE FUNDO
             flex: 1,
             alignItems: 'center',
             justifyContent: 'center'
         },
+
+        //BOTAO POPUP MARCAR CONSULTA
         content: {
-            backgroundColor: "#FFF",
-            width: "85%", //largura
+            backgroundColor: "#F3F3FF",
+            width: "80%", //largura
             paddingTop: 20,
-            paddingBottom: 30,
+            paddingBottom: 20,
             alignItems: "center",
             justifyContent: "center",
-            borderRadius: 8 //cincunferencia da borda
+            borderRadius: 8, //cincunferencia da borda
+            elevation: 10, // sombra para destacar o modal
+            fontWeight: "bold"
+
         },
         title: {
-            fontSize: 25, // tamanho da fonte
-            fontWeight: "bold", //negrito
-            color: "#000",
-            marginBottom: 50,
+            fontSize: 20, // tamanho da fonte
+            marginBottom: 30,
             textAlign: "left",
-            left: "auto",
+            width: "92%",
+            fontWeight: "black"
+        },
+        texto:{
+            fontSize: 16,
+            marginBottom: 10,
             width: "90%"
         },
         buttonArea: {
             flexDirection: "row", //botoes um ao lado do outro
-            width: '80%', //largura
+            width: '85%', //largura
             alignItems: "center",
-            justifyContent: "space-between"
+            justifyContent: "space-between",
+
+
+            
         },
         button:{
-            flex:1,
-            alignItems: "center",
-            padding: 10, //espaçamento entre eles
+            height: 45,
+            paddingVertical: 5, // espaçamento vertical
+            paddingHorizontal: 25, // espaçamento horizontal
             borderRadius: 8,
-            fontWeight: 'bold',
-            backgroundColor: "#4444"
-        }
+            backgroundColor: "#F3F3FF",
+            borderWidth: 2, // cor da borda
+            borderStyle: "solid",
+
+
+        },
+        cor:{
+            backgroundColor: "#1E90FF",
+
+        },
+        tamanhoText:{
+            fontWeight: 'black',
+            fontSize: 22,
+            
+
+        },
+        
+            //BOTAO POPUP Cancelar
+
+        content2:{
+            backgroundColor: "#F3F3FF",
+            width: "80%", //largura
+            paddingTop: 20,
+            paddingBottom: 10,
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 8, //cincunferencia da borda
+            elevation: 10, // sombra para destacar o modal
+            fontWeight: "bold"
+        },
+        title2:{
+            fontSize: 18, // tamanho da fonte
+            marginBottom: 30,
+            textAlign: "left",
+            width: "100%",
+            fontWeight: "bold",
+            textAlign: "center",
+            
+
+        },
+        containerDatePicker:{
+            marginTop: -15,
+            marginBottom: 30,
+            borderColor: 'black',
+            borderWidth: 2, // cor da borda
+          },
+          datePickerInput:{
+            backgroundColor: "#FFF",
+            fontWeight: '300', // texto em negrito
+            fontSize: 20, // tamanho do texto dentro do input
+            height: 35,
+            width: 120, // largura do campo
+            textAlign: "center",
+            alignItems: "center",
+            borderStyle: "solid",
+            justifyContent: "center",
+            color: 'blue' // A data, depois de selecionada, fica na cor preta.
+          },
+        motivoCancelamento: {
+            backgroundColor: "#FFF",
+            minHeight: 40,
+            borderColor: 'gray',
+            borderWidth: 1,
+            width: "90%",
+            marginTop: -20,
+            marginBottom: 20,
+            paddingHorizontal: 8,
+        },
+        texto2: {
+            fontSize: 16,
+            marginTop: 0,
+            marginBottom: 0,
+            width: "100%",
+            fontWeight: "bold",
+            textAlign: "center",
+            fontSize: 20,
+
+
+        },
+        buttonArea2:{
+            flexDirection: "row", //botoes um ao lado do outro
+            width: '100%', //largura
+            alignItems: "center",
+            justifyContent: "space-between",
+
+
+
+        },
+        button2:{
+            paddingVertical: 10, // espaçamento vertical
+            paddingHorizontal: 30, // espaçamento horizontal
+            //padding: 10, //espaçamento entre eles
+        },
+        cor2:{
+            color: "red",
+
+        },
+        
 
 });
 
