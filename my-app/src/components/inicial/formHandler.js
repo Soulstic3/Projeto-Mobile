@@ -1,10 +1,11 @@
 import { BASE_URL } from '../../config'; // pegar url que esta salva no arquivo config.js
 import { Alert } from 'react-native';
+import { openModal } from './index';
 
-const handleFormSubmit = (data, navigation) => {
+const handleFormSubmit = (data, callback) => {
 
 
-  const url = `${BASE_URL}/users/cadastro`;
+  const url = `${BASE_URL}/consulta/agendar`;
   const handleSubmitError = (error) => {
     console.error('Error sending request:', error);
     if (error.json) {
@@ -34,8 +35,7 @@ const handleFormSubmit = (data, navigation) => {
     if (responseData.error) {
       throw new Error(responseData.error);
     } else {
-      Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
-      navigation.navigate("Login");
+     callback();
     }
   })
   .catch(handleSubmitError)

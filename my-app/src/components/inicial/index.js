@@ -5,20 +5,21 @@ import DropDownPicker from 'react-native-dropdown-picker'; //menu drop
 import DateTimePicker from '@react-native-community/datetimepicker'; // campo data
 //import DatePicker from "react-native-modern-datepicker";
 import { useNavigation } from '@react-navigation/native';
+import handleFormSubmit from './formHandler';
 
 export function Inicial() {
   const [modalVisible, setModalVisible] = useState(false); // pop up botao marcar
   const [activeModal, setActiveModal] = useState('none'); // Estado para controlar qual modal está aberto
   //
   const [open, setOpen] = useState(false); // dropdown menu selecionado
-  const [tipo, setTipo] = useState(null);
+  const [tipo_consulta, setTipo] = useState(null);
   //
   const [selectedDate, setSelectedDate] = useState(new Date()); // Data selecionada no DateTimePicker
   const [selectedTime, setSelectedTime] = useState(new Date()); // Horário selecionado no DateTimePicker
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const [dateInputValue, setDateInputValue] = useState(''); // texto do placeholder destacado de preto
-  const [timeInputValue, setTimeInputValue] = useState(''); // texto do placeholder destacado de preto
+  const [data_consulta, setDateInputValue] = useState(''); // texto do placeholder destacado de preto
+  const [horario_consulta, setTimeInputValue] = useState(''); // texto do placeholder destacado de preto
   //const [date, setDate] = useState(new Date());
   //const [time, setTime] = useState(new Date());
 
@@ -65,14 +66,17 @@ export function Inicial() {
     };
  
   const handlePress = () => {
+    handleFormSubmit({
+      data_consulta,
+      horario_consulta,
+      tipo_consulta
+    }, openModal)
+  };
+
+  const openModal = () => {
     setActiveModal('consulta'); // Define o modal de consulta como ativo
     setModalVisible(true);
-    navigation.navigate('ConsMarcada', { 
-      selectedDate: selectedDate.toISOString(), 
-      selectedTime: selectedTime.toISOString(), 
-      open: tipo // Passa o valor selecionado do tipo
-    });
-  };
+  }
 
 
 const [items, setItems] = useState([
@@ -101,7 +105,7 @@ const [items, setItems] = useState([
           <DropDownPicker
             style={styles.inputDrop}
             open={open}
-            value={tipo}
+            value={tipo_consulta}
             items={items}
             setOpen={setOpen}
             setValue={setTipo}
@@ -109,7 +113,6 @@ const [items, setItems] = useState([
             placeholder=""
             textStyle={styles.dropdownText} // Adicionando estilo para o texto dos itens do dropdown
             labelStyle={styles.dropdownLabel} // Adicionando estilo para os rótulos dos itens do dropdown
-
             listItemContainerStyle={styles.listItemContainer} // Adicionando estilo para o container dos itens do dropdown
             selectedItemLabelStyle={styles.selectedItemLabel} // Adicionando estilo para o texto dos itens selecionados
             itemSeparator={true} // Adiciona linhas divisórias entre os itens
@@ -126,7 +129,7 @@ const [items, setItems] = useState([
         <View style={styles.containerDatePicker}>
           <TextInput 
             style={styles.datePickerInput}
-            value={dateInputValue} // Mostra a data selecionada no campo de texto/placeholder // alterado
+            value={data_consulta} // Mostra a data selecionada no campo de texto/placeholder // alterado
             editable={false} // Impede que o usuário edite manualmente o campo
             placeholder="dia/mês/ano"
             placeholderTextColor="black" // Alterado
@@ -138,10 +141,9 @@ const [items, setItems] = useState([
           <Text style={styles.texto}>Horário:</Text>
           <TouchableWithoutFeedback onPress={() => setShowTimePicker(true)}  >  
             <View style={styles.containerDatePicker}>
-              <TextInput  // adicionando estilizacao
-                
+              <TextInput  // adicionando estilizacao                
                 style={styles.timePickerInput}
-                value={timeInputValue} // Mostra o horario selecionado no campo de texto/placeholder // alterado
+                value={horario_consulta} // Mostra o horario selecionado no campo de texto/placeholder // alterado
                 editable={false} // Impede que o usuário edite manualmente o campo
                 placeholder="--Escolha--"
                 placeholderTextColor="black" // Alterado
@@ -204,7 +206,7 @@ const [items, setItems] = useState([
 const styles = StyleSheet.create({
   topBar: {
     backgroundColor: "#FFFFFF",
-    height: 90,
+    height: 25,
     width: '100%',
   },
   background: {
@@ -356,15 +358,3 @@ const styles = StyleSheet.create({
 });
 
 export default Inicial;
-
-/*
-function MyComponent() {
-  let colorScheme = useColorScheme();
-
-  if (colorScheme === 'dark') {
-    // render some dark thing
-  } else {
-    // render some light thing
-  }
-}
-*/

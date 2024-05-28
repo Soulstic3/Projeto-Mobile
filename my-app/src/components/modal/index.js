@@ -89,7 +89,7 @@ export function ModalConsulta({ handleClose, activeModal }){
 
     const handleOKPress = () => {
         // Aqui você pode redirecionar para a página desejada
-        navigation.navigate("cons_marcada");
+        navigation.navigate("ConsMarcada");
         handleClose(); // Fecha o modal após redirecionar
          
     };

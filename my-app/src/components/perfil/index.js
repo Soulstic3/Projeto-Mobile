@@ -105,6 +105,7 @@ export default function Perfil() {
   );
   
   return (
+    
     <SafeAreaView style={styles.container}>
       <View style={styles.formContainer}>
         <FlatList
