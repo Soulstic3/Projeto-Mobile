@@ -1,14 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Modal, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Modal,
+  StyleSheet,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import DropDownPicker from 'react-native-dropdown-picker';
+import { ScrollView } from 'react-native-virtualized-view';
+import DropDownPicker from "react-native-dropdown-picker";
 import DatePicker from "react-native-modern-datepicker";
-import handleFormSubmit from './formHandler'
+import handleFormSubmit from "./formHandler";
 import { cpfApplyMask, susApplyMask, telApplyMask } from "@../../../utils/mask";
 
 export default function Cadastro() {
   const navigation = useNavigation();
-  
+
   const [nome, setNome] = useState("");
   const [numero_cadsus, setNumeroCadsus] = useState("");
   const [cpf, setCpf] = useState("");
@@ -26,20 +34,19 @@ export default function Cadastro() {
   const [sexo, setSexo] = useState(null);
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([
-    { label: 'Masculino', value: 'Masculino' },
-    { label: 'Feminino', value: 'Feminino' },
-    { label: 'Não-binário', value: 'Não-binário' }
+    { label: "Masculino", value: "Masculino" },
+    { label: "Feminino", value: "Feminino" },
+    { label: "Não-binário", value: "Não-binário" },
   ]);
 
   //função para traduzir a data para o formado br que não está funcionando sabe se la o pq
   const formatDate = (date) => {
-    return date.toLocaldateString('pt-BR', {
+    return date.toLocaldateString("pt-BR", {
       day: "2-digits",
       month: "2-digits",
-      year: "numeric"
+      year: "numeric",
     });
   };
-
 
   //função que atualiza a data selecionada no datepicker
   const handleChange = (propDate) => {
@@ -51,7 +58,7 @@ export default function Cadastro() {
     setInputDate(data_nascimento);
     setDateButton(false);
   };
-//Função que mostra a data selecionada no input
+  //Função que mostra a data selecionada no input
   useEffect(() => {
     if (selectedDate) {
       console.log("Selected date:", selectedDate);
@@ -89,15 +96,18 @@ export default function Cadastro() {
   };
 
   const handleSubmit = () => {
-    handleFormSubmit({
-      nome,
-      cpf,
-      data_nascimento,
-      numero_cadsus,
-      sexo,
-      telefone,
-      senha,
-    }, navigation);
+    handleFormSubmit(
+      {
+        nome,
+        cpf,
+        data_nascimento,
+        numero_cadsus,
+        sexo,
+        telefone,
+        senha,
+      },
+      navigation
+    );
   };
 
   return (
@@ -146,17 +156,13 @@ export default function Cadastro() {
             <TextInput
               style={styles.input}
               value={inputDate}
-              onChangeText={text => setInputDate(text)}
+              onChangeText={(text) => setInputDate(text)}
               placeholder="YYYY/MM/DD"
               editable={false}
             />
           </TouchableOpacity>
 
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={dateButton}
-          >
+          <Modal animationType="slide" transparent={true} visible={dateButton}>
             <View style={styles.centerView}>
               <View style={styles.modalView}>
                 <DatePicker
@@ -176,10 +182,16 @@ export default function Cadastro() {
                   )}
                 </DatePicker>
                 <View style={styles.buttonContainer}>
-                  <TouchableOpacity onPress={() => setDateButton(false)} style={styles.buttonfechar}>
+                  <TouchableOpacity
+                    onPress={() => setDateButton(false)}
+                    style={styles.buttonfechar}
+                  >
                     <Text style={styles.textData}>Fechar</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={handleSaveDate} style={styles.buttonsave}>
+                  <TouchableOpacity
+                    onPress={handleSaveDate}
+                    style={styles.buttonsave}
+                  >
                     <Text style={styles.textData}>Salvar</Text>
                   </TouchableOpacity>
                 </View>
@@ -187,9 +199,8 @@ export default function Cadastro() {
             </View>
           </Modal>
 
-
           <Text style={styles.label}>Selecione seu Gênero:</Text>
-          <View style={styles.dropdownContainer}>
+          {/* <View style={styles.dropdownContainer}> */}
             <DropDownPicker
               style={styles.input}
               open={open}
@@ -200,7 +211,7 @@ export default function Cadastro() {
               setItems={setItems}
               placeholder="Masculino"
             />
-          </View>
+          {/* </View> */}
           <Text style={styles.label}>Crie sua Senha:</Text>
           <TextInput
             style={styles.input}
@@ -224,7 +235,7 @@ export default function Cadastro() {
       </ScrollView>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   FormContext: {
