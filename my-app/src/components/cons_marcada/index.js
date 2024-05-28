@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, FlatList, TouchableOpacity, Modal, ScrollView, Dimensions } from 'react-native';
+import { StyleSheet, View, Text, FlatList, TouchableOpacity, Modal, Dimensions } from 'react-native';
 import { ModalConsulta } from '../modal/index';
+import { ScrollView } from 'react-native-virtualized-view';
 import { BASE_URL } from '../../config'; // pegar url que esta salva no arquivo config.js
 
 
