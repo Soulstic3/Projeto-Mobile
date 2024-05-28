@@ -18,7 +18,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/mipmap-xxxhdpi/ic_launcher_foreground.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.anonymous.SAS"
     },
     "web": {
       "favicon": "./assets/mipmap-xxxhdpi/ic_launcher_monochrome.png"
