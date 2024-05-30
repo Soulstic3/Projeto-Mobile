@@ -12,6 +12,7 @@ export default function Perfil() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
   const [dados, setDados] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   const base64Encode = (data) => {
     return btoa(
@@ -39,6 +40,12 @@ export default function Perfil() {
     }
   };
 
+  const handleRefresh = () => {
+    setRefreshing(true)
+    fetchData()
+    setRefreshing(false)
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -53,7 +60,9 @@ export default function Perfil() {
   if (loading) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <View style={styles.formContainer}>
+          <ActivityIndicator style={styles.loading} size="large" color="#0000ff" />
+        </View>
       </View>
     );
   }
@@ -126,6 +135,8 @@ export default function Perfil() {
               </TouchableOpacity>
             </View>
           }
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
         />
       </View>
     </SafeAreaView>
@@ -133,76 +144,77 @@ export default function Perfil() {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#3970C9"
-  },
-  iconeContainer: {
-    width: 160,
-  },
-  icone: {
-    alignSelf: "flex-end",
-  },
-  text: {
-    fontWeight: "300",
-    fontSize: 20,
-    marginTop: 20
-  },
-  textData: {
-    fontSize: 15,
-    alignSelf: "center",
-    color: "#fff"
-  },
-  dados: {
-    fontWeight: "300",
-    fontSize: 20,
-    marginTop: 10,
-    borderStyle: "solid",
-    borderBottomWidth: 1,
-    width: 300,
-    textAlign: "center"
-  },
-  image: {
-    flex: 1,
-    width: undefined,
-    height: undefined
-  },
-  titleBar: {
-    backgroundColor: "#fff",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingTop: 24,
-    height: 60,
-    marginBottom: 10
-
-  },
-  profileImage: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    overflow: "hidden",
-    borderStyle: "solid",
-    borderWidth: 1
-
-  },
-  infoContainer: {
-    alignSelf: "center",
-    alignItems: "center",
-    marginTop: 16
-  },
-  formContainer: {
-    backgroundColor: "#fff",
-    margin: 10,
-    paddingTop: 10,
-    borderRadius: 10,
-    paddingBottom: 20
-  },
   botao: {
+    backgroundColor: "#3970C9",
     marginTop: 30,
     padding: 12,
     borderRadius: 10,
     width: 300,
+    alignSelf: "center"
+  },
+  container: {
+    backgroundColor: "#3970C9",
+    flex: 1
+  },
+  dados: {
+    borderBottomWidth: 1,
+    borderStyle: "solid",
+    fontSize: 20,
+    fontWeight: "300",
+    marginTop: 10,
+    textAlign: "center",
+    width: 300
+  },
+  formContainer: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    margin: 10,
+    paddingBottom: 20,
+    paddingTop: 10,
+    minHeight: 600
+  },
+  icone: {
+    alignSelf: "flex-end"
+  },
+  iconeContainer: {
+    width: 160
+  },
+  infoContainer: {
+    alignItems: "center",
     alignSelf: "center",
-    backgroundColor: "#3970C9"
+    marginTop: 16
+  },
+  image: {
+    flex: 1,
+    height: undefined,
+    width: undefined
+  },
+  loading: {
+    paddingTop: 300,
+  },
+  profileImage: {
+    borderRadius: 100,
+    borderStyle: "solid",
+    borderWidth: 1,
+    height: 200,
+    overflow: "hidden",
+    width: 200
+  },
+  text: {
+    fontSize: 20,
+    fontWeight: "300",
+    marginTop: 20
+  },
+  textData: {
+    alignSelf: "center",
+    color: "#fff",
+    fontSize: 15
+  },
+  titleBar: {
+    backgroundColor: "#fff",
+    flexDirection: "row",
+    height: 60,
+    justifyContent: "space-between",
+    paddingTop: 24
   }
 });

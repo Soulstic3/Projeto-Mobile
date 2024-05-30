@@ -23,11 +23,9 @@ export const handleFormSubmit = async ({ cpf, senha }, navigation, handleSubmitE
   } catch (error) {
     if (error.json) {
       error.json().then(errorMessage => {
-        console.error('Error sending request:', errorMessage.message);
         handleSubmitError(Alert.alert(errorMessage.message));
       });
     } else {
-      console.error('Error sending request:', error);
       handleSubmitError("Erro ao enviar solicitação");
     }
     

@@ -162,10 +162,11 @@ export default function Cadastro() {
             />
           </TouchableOpacity>
 
-          <Modal animationType="slide" transparent={true} visible={dateButton}>
+          <Modal animationType="slide" transparent={true} visible={dateButton} >
             <View style={styles.centerView}>
               <View style={styles.modalView}>
                 <DatePicker
+                  style={styles.modal}
                   mode="calendar"
                   selected={data_nascimento}
                   onDateChange={handleChange}
@@ -238,6 +239,10 @@ export default function Cadastro() {
 }
 
 const styles = StyleSheet.create({
+  modal: {
+    height: 300,
+    width: 300,
+  },
   FormContext: {
     padding: 10,
     width: "100%",
@@ -309,6 +314,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderRadius: 20,
     width: "90%",
+    height: 450,
     padding: 35,
     alignItems: "center",
     shadowColor: "#000",

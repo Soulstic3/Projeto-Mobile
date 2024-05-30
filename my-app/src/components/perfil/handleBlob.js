@@ -39,10 +39,10 @@ const handleImagePicker = async () => {
         const data = await response.json();
         Alert.alert('Foto de perfil alterada com sucesso!');
       } else {
-        console.error('Error uploading image:', response.statusText);
+        Alert.alert('Error uploading image:', response.statusText);
       }
     } catch (error) {
-      console.error('Error uploading image:', error);
+      Alert.alert('Error uploading image:', error);
     }
   }
 };

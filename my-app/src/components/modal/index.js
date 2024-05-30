@@ -1,7 +1,11 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import {BASE_URL} from '../../config';
+import { atualizarConsultas } from '../cons_marcada';
 
+
+const url = `${BASE_URL}/consulta/cancelarUltimaConsulta`;
 // Modal de Consulta
 const ConsultaModal = ({ handleClose, handleOKPress }) => (
     <View style={styles.content}>
@@ -24,38 +28,9 @@ const ConsultaModal = ({ handleClose, handleOKPress }) => (
 const CancelarModal = ({ handleClose, handleCancelPress, textInputRef, text, setText, handlePressIn }) => (
     <View style={styles.content2}>
         <Text style={styles.title2}>
-            Deseja cancelar a consulta de data:
+            Deseja realmente cancelar a consulta?
         </Text>
-
-        <View style={styles.containerDatePicker}>
-          <TextInput  // adicionando estilizacao
-            
-            style={styles.datePickerInput}
-            editable={false} // Impede que o usuário edite manualmente o campo
-            placeholder="dia/mês/ano"
-            placeholderTextColor="black" // Alterado
-          />
-        </View>
-      
-        <Text style={styles.title2}>
-            Motivo do cancelamento:
-        </Text>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-            <TextInput 
-            style={styles.motivoCancelamento} 
-            ref={textInputRef}
-            value={text}
-            onChangeText={setText}
-            placeholder="Type here..."
-            multiline={true} // Habilita a entrada de várias linhas de texto
-            onFocus={() => { // Define a posição inicial do cursor para o início do texto quando o TextInput ganha foco
-                if (textInputRef.current) {
-                    textInputRef.current.setNativeProps({ selection: { start: 0, end: 0 } });
-                }
-            }}
-
-            />
-        </TouchableWithoutFeedback>
+       
         <View style={styles.buttonArea2}>
             <TouchableOpacity style={styles.button2} onPress={handleClose}>
                 <Text style={styles.texto2}>Voltar</Text>
@@ -91,17 +66,44 @@ export function ModalConsulta({ handleClose, activeModal }){
         // Aqui você pode redirecionar para a página desejada
         navigation.navigate("ConsMarcada");
         handleClose(); // Fecha o modal após redirecionar
-         
     };
 
    
 
     const handleCancelPress = () => {
-        // Adicione a lógica de cancelamento aqui
-        console.log('Consulta cancelada!');
-        handleClose(); // Feche o modal após cancelar
+        const handleSubmitError = (error) => {
+            console.error('Error sending request:', error);
+            if (error.json) {
+              error.json().then((errorMessage) => {
+                Alert.alert('Erro', errorMessage.message);
+              });
+            } else {
+              Alert.alert('Erro', 'Erro ao enviar solicitação');
+            }
+          };
+        fetch(url, {        
+            method: 'DELETE',
+            redirect: 'follow'   
+            },
+          )
+          .then(response => {      // pegar resposta da api
+            if (!response.ok) {
+              throw response
+              
+            }
+            return response.json();
+          })
+          .then((responseData) => {      // se tudo der certo mostrar alerta ( o then só é executado quando todo 
+            if (responseData.error) {
+              throw new Error(responseData.error);
+            } else {
+                console.log('Consulta cancelada!');
 
-    };
+                handleClose(); // Feche o modal após cancelar
+            }
+          })
+          .catch(handleSubmitError)
+        };
     return(
         <View style={styles.container}>
             {activeModal === 'consulta' && (
@@ -123,7 +125,7 @@ export function ModalConsulta({ handleClose, activeModal }){
             
         </View>
     );
-}
+};
 
 const styles = StyleSheet.create({
         container: {

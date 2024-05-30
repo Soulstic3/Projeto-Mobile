@@ -7,7 +7,6 @@ const handleFormSubmit = (data, callback) => {
 
   const url = `${BASE_URL}/consulta/agendar`;
   const handleSubmitError = (error) => {
-    console.error('Error sending request:', error);
     if (error.json) {
       error.json().then((errorMessage) => {
         Alert.alert('Erro', errorMessage.message || 'Erro ao realizar cadastro verifique seus dados');

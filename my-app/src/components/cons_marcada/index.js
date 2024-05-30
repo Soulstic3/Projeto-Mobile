@@ -3,88 +3,123 @@ import { StyleSheet, View, Text, FlatList, TouchableOpacity, Modal, Dimensions }
 import { ModalConsulta } from '../modal/index';
 import { ScrollView } from 'react-native-virtualized-view';
 import { BASE_URL } from '../../config'; // pegar url que esta salva no arquivo config.js
+import { useNavigation } from "@react-navigation/native";
 
 
 
 export function ConsMarcada() {
-  // Rota ao clicar no botao marcar consulta dos campos selecionados
-
-  //
+  const navigation = useNavigation();
   const [consultas, setConsultas] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [activeModal, setActiveModal] = useState('none'); // Estado para controlar qual modal está aberto
   const url = `${BASE_URL}/consulta/exibirTodas`;
+  const [refreshing, setRefreshing] = useState(false);
 
   // Estado para armazenar a data selecionada
   const exibirPopup = () => {
     setModalVisible(true);
     setActiveModal('cancelar'); // Define o modal de consulta como ativo
   };
-  
-    useEffect(() => {
-      fetch(url)
-       .then(response => response.json())
-       .then(data => setConsultas(data));
-    }, []);
-  
-    const renderItem = ({ item }) => {
-      return (
-        <View style={styles.textCentro}>
-          <Text style={styles.tituloC}>{item.tipo_consulta}</Text>
-  
-          <View style={styles.textCentroC}>
-            <View style={styles.containerDatePicker}>
-              <Text style={styles.texto}>Data da consulta:</Text>
-              <Text style={styles.datePickerInput}>{item.data_consulta}</Text>
-            </View>
-  
-            <View style={styles.containerDatePicker}>
-              <Text style={styles.texto}>Horário:</Text>
-              <Text style={styles.timePickerInput}>{item.horario_consulta}</Text>
-            </View>
-          </View>
-  
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => exibirPopup(item.id_consulta)}
-          >
-            <Text style={styles.buttonText}>Cancelar</Text>
-          </TouchableOpacity>
-  
-          <View style={styles.line}></View>
-        </View>
-      );
-    };
-  
+
+  const atualizarConsultas = () => {
+    fetch(url)
+      .then(response => response.json())
+      .then(data => setConsultas(data));
+  };
+
+  const handleRefresh = () => {
+    setRefreshing(true)
+    atualizarConsultas()
+    setRefreshing(false)
+  };
+
+  useEffect(() => {
+    atualizarConsultas();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      atualizarConsultas();
+    });
+
+    return unsubscribe;
+  }, [navigation, atualizarConsultas]);
+
+  if (consultas && consultas.length === 0) {
     return (
       <View style={styles.background}>
-        <View style={styles.topBar}>
-          {/* conteúdo do topo */}
-        </View>
         <View style={styles.container}>
-          <View style={styles.scrollViewWrapper}>
-            <ScrollView contentContainerStyle={styles.scrollViewContent}>
-              <FlatList
-                data={consultas}
-                renderItem={renderItem}
-                keyExtractor={item => item.id_consulta.toString()}
-              />
-            </ScrollView>
+          <View style={styles.center}>
+            <Text style={styles.texto}>Você ainda não agendou uma consulta</Text>
           </View>
-          <Modal
-            animationType="fade"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => setModalVisible(false)}
-          >
-            <ModalConsulta
-              handleClose={() => setModalVisible(false)}
-              activeModal={activeModal}
-              handleOKPress={() => setModalVisible(false)}
-            />
-          </Modal>
-                </View>
         </View>
+      </View>
+    );
+  }
+
+    const renderItem = ({ item, index }) => {
+  const lastItem = index === 0;
+
+  return (
+    <View style={styles.textCentro}>
+      <Text style={styles.tituloC}>{item.tipo_consulta}</Text>
+
+      <View style={styles.textCentroC}>
+        <View style={styles.containerDatePicker}>
+          <Text style={styles.texto}>Data da consulta:</Text>
+          <Text style={styles.datePickerInput}>{item.data_consulta}</Text>
+        </View>
+
+        <View style={styles.containerDatePicker}>
+          <Text style={styles.texto}>Horário:</Text>
+          <Text style={styles.timePickerInput}>{item.horario_consulta}</Text>
+        </View>
+      </View>
+
+      {lastItem && (
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => exibirPopup(item.id_consulta)}
+        >
+          <Text style={styles.buttonText}>Cancelar</Text>
+        </TouchableOpacity>
+      )}
+
+      <View style={styles.line}></View>
+    </View>
+  );
+};
+
+return (
+  <View style={styles.background}>
+    <View style={styles.topBar}>
+      {/* conteúdo do topo */}
+    </View>
+    <View style={styles.container}>
+      <View style={styles.scrollViewWrapper}>
+          <FlatList
+            data={consultas.reverse()}
+            renderItem={renderItem}
+            keyExtractor={item => item.id_consulta.toString()}
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+          />
+      </View>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <ModalConsulta
+          handleClose={() => setModalVisible(false)}
+          activeModal={activeModal}
+          handleOKPress={() => setModalVisible(false)}
+        />
+      </Modal>
+    </View>
+  </View>
+
     );
   };
   
@@ -100,14 +135,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#1E90FF",
   },
-  scrollViewWrapper: {
-    flex: 1, // Garante que o ScrollView ocupe todo o espaço disponível
-  },
-  scrollViewContent: {
-    flexGrow: 1, // Garante que o conteúdo do ScrollView cresça para preencher o espaço disponível
-    justifyContent: 'center', // Centraliza verticalmente se o conteúdo for menor que a tela
-    //paddingVertical: 10,
-  },
+
   container: {
     flex: 1,
     padding: 20,
@@ -120,6 +148,10 @@ const styles = StyleSheet.create({
     marginRight: 10,
     minHeight: Dimensions.get('window').height - 130, // Garante que o contêiner tenha altura mínima
 
+  },
+  center:{
+    verticalAlign: "middle",
+    paddingTop: 300,
   },
   line: {
     height: 1,
@@ -166,7 +198,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     height: 40,
     marginBottom: -12,
-
+    textAlign: "center"
   },
 
   // DateTimePicker

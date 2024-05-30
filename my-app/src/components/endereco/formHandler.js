@@ -6,7 +6,6 @@ const handleFormSubmit = (data, navigation) => {
 
   const url = `${BASE_URL}/endereco/inserir`;
   const handleSubmitError = (error) => { 
-    console.error('Error sending request:', error);
     Alert.alert('Erro', 'Erro ao enviar solicitação');
   };
 
@@ -26,7 +25,6 @@ const handleFormSubmit = (data, navigation) => {
   })
   .then((responseData) => {      // se tudo der certo mostrar alerta ( o then só é executado quando todo 
     if (responseData.error) {
-      console.error('API error:', responseData.error);
       Alert.alert('Erro', responseData.error);
     } else {
       Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');

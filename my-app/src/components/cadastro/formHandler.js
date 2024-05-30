@@ -6,7 +6,6 @@ const handleFormSubmit = (data, navigation) => {
 
   const url = `${BASE_URL}/users/cadastro`;
   const handleSubmitError = (error) => {
-    console.error('Error sending request:', error);
     if (error.json) {
       error.json().then((errorMessage) => {
         Alert.alert('Erro', errorMessage.message || 'Erro ao realizar cadastro verifique seus dados');
