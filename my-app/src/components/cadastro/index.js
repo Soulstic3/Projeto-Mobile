@@ -6,9 +6,9 @@ import {
   TouchableOpacity,
   Modal,
   StyleSheet,
+  ScrollView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { ScrollView } from 'react-native-virtualized-view';
 import DropDownPicker from "react-native-dropdown-picker";
 import DatePicker from "react-native-modern-datepicker";
 import handleFormSubmit from "./formHandler";
@@ -149,7 +149,6 @@ export default function Cadastro() {
           <Text style={styles.label}>Data de Nascimento:</Text>
           <TouchableOpacity
             onPress={() => {
-              console.log("onPress chamado");
               setDateButton(true);
             }}
           >

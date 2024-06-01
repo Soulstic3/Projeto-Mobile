@@ -2,7 +2,6 @@ import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import {BASE_URL} from '../../config';
-import { atualizarConsultas } from '../cons_marcada';
 
 
 const url = `${BASE_URL}/consulta/cancelarUltimaConsulta`;
